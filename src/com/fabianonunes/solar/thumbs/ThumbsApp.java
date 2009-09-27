@@ -5,35 +5,24 @@ package com.fabianonunes.solar.thumbs;
 
 import ilist.ui.generic.grid.JCell;
 
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.media.jai.Histogram;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.SubsampleBinaryToGrayDescriptor;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.Task;
 import org.jdesktop.swingx.JXImagePanel;
-import org.jpedal.PdfDecoder;
-import org.jpedal.ThumbnailDecoder;
-import org.w3c.dom.Document;
 
 import br.jus.tst.sesdi2.pdf.PageProcessor;
 import br.jus.tst.sesdi2.pdf.PdfImageUtils;
@@ -101,8 +90,6 @@ public class ThumbsApp extends SingleFrameApplication {
 	private class RunThumbsTask extends
 			org.jdesktop.application.Task<Object, BufferedImage> {
 
-		PdfDecoder decoder = new PdfDecoder();
-		ThumbnailDecoder tdecoder;
 		InputStream is;
 
 		long start = System.currentTimeMillis();
@@ -111,33 +98,8 @@ public class ThumbsApp extends SingleFrameApplication {
 
 			super(app);
 
-			// try {
-			// File file = new File("/home/fabiano/teste.pdf");
-			// is = file.toURI().toURL().openStream();
-			// } catch (FileNotFoundException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// } catch (MalformedURLException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// } catch (IOException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-
 			is = ThumbsApp.class
 					.getResourceAsStream("resources/10-2009-000-00-00.1 v1-6.pdf");
-			// .getResourceAsStream("resources/10-2009-000-00-00.1(v)[m].pdf");
-
-			// f = new File("/home/fabiano/workdir/teste[pronto].pdf");
-			// //
-			// try {
-			// decoder.openPdfFile(f.getAbsolutePath());
-			// } catch (PdfException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// tdecoder = new ThumbnailDecoder(decoder);
 
 		}
 
@@ -152,17 +114,12 @@ public class ThumbsApp extends SingleFrameApplication {
 
 				JXImagePanel panel = new JXImagePanel();
 				panel.setSize(image.getWidth(), image.getHeight());
-				panel.setFocusable(true);
-				panel.requestFocusInWindow();
-				panel.setOpaque(false);
-				panel.setImage(image);
+				panel.setImage((Image)image);
 
 				JCell<Double> cell = getView().grid.getCell(panel,
-						getView().grid.cells.size() + 1);// .addElement(image);
+						getView().grid.cells.size() + 1);
 				Double key = histogram.getStandardDeviation()[0];//
 				cell.setComparable(key);
-
-				// getView().unsortedModel.addElement(image);
 
 				getView().grid.addCell(cell);
 
@@ -197,16 +154,10 @@ public class ThumbsApp extends SingleFrameApplication {
 						RenderingHints hints = new RenderingHints(
 								JAI.KEY_INTERPOLATION, interpolation);
 
-						float scale = (float) 300 / imageOfPage.getHeight();
+						float scale = (float) 250 / imageOfPage.getHeight();
 
 						rop = SubsampleBinaryToGrayDescriptor.create(
 								imageOfPage, scale, scale, hints);
-
-						// Histogram histogram = (Histogram) JAI.create(
-						// "histogram", rop).getProperty("histogram");
-						// System.out.println(Arrays.toString(histogram
-						// .getStandardDeviation()));
-						// System.out.println("-----");
 
 						publish(((RenderedOp) rop).getAsBufferedImage());
 
@@ -231,52 +182,8 @@ public class ThumbsApp extends SingleFrameApplication {
 				e.printStackTrace();
 			}
 
-			return decoder;
+			return null;
 
-		}
-
-		@SuppressWarnings("unused")
-		public Object doInBackgroundJPedal() {
-			try {
-				PdfReader reader = new PdfReader(is);
-				byte[] info = reader.getMetadata();
-				DocumentBuilderFactory fact = DocumentBuilderFactory
-						.newInstance();
-				fact.setNamespaceAware(true);
-				DocumentBuilder db = fact.newDocumentBuilder();
-				ByteArrayInputStream bais = new ByteArrayInputStream(info);
-				Document doc = db.parse(bais);
-
-				String value = doc.getElementsByTagName("StandartDeviation")
-						.item(0).getTextContent();
-				String[] values = StringUtils.split(value, ",");
-
-				SortedMap<Double, Integer> map = new TreeMap<Double, Integer>();
-
-				int counter = 1;
-
-				for (String ivalue : values) {
-					map.put(Double.parseDouble(ivalue), counter++);
-				}
-				Set<Double> keys = map.keySet();
-
-				int counter2 = 1;
-
-				for (Double key : keys) {
-					publish(tdecoder.getPageAsThumbnail(map.get(key), 200));
-
-					counter2++;
-
-					if (counter2 > 100) {
-						break;
-					}
-				}
-
-			} catch (Exception ex) {
-				Logger.getLogger(ThumbsApp.class.getName()).log(Level.SEVERE,
-						null, ex);
-			}
-			return null; // return your result
 		}
 
 		@Override

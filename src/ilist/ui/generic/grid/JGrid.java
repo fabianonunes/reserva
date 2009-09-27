@@ -97,8 +97,9 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 							* (getCellSize().height + getVerticalGap())));
 		}
 
+		contentPanel.revalidate();
+		contentPanel.repaint();
 		revalidate();
-
 		repaint();
 
 	}
