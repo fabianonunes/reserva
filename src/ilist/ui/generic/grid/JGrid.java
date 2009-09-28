@@ -40,7 +40,7 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 		Scrollable {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPanel;
+	public JPanel contentPanel;
 	// public ListModel model;
 	private GridCellRenderer defaultRenderer;
 	private Map<Class<?>, GridCellRenderer> renderers = new HashMap<Class<?>, GridCellRenderer>();
@@ -97,8 +97,6 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 							* (getCellSize().height + getVerticalGap())));
 		}
 
-		contentPanel.revalidate();
-		contentPanel.repaint();
 		revalidate();
 		repaint();
 

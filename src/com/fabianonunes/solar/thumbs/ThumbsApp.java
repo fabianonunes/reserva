@@ -9,6 +9,9 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -37,6 +40,7 @@ import com.lowagie.text.pdf.PdfReader;
 public class ThumbsApp extends SingleFrameApplication {
 
 	private ThumbsView view;
+	private boolean runned = false;
 
 	/**
 	 * At startup create and show the main frame of the application.
@@ -82,9 +86,22 @@ public class ThumbsApp extends SingleFrameApplication {
 	}
 
 	@Action
-	public Task<Object, BufferedImage> runThumbs() {
-		return new RunThumbsTask(org.jdesktop.application.Application
-				.getInstance(com.fabianonunes.solar.thumbs.ThumbsApp.class));
+	public Task<Object, BufferedImage> runThumbs() throws FileNotFoundException {
+		if(!runned ){
+			runned = true;
+			return new RunThumbsTask(org.jdesktop.application.Application
+					.getInstance(com.fabianonunes.solar.thumbs.ThumbsApp.class));
+		}
+		
+		int count = getView().grid.contentPanel.getComponentCount();
+		for (int i = 0; i < count; i++) {
+			System.out.println(getView().grid.contentPanel.getComponent(i));
+		}
+		getView().grid.contentPanel.revalidate();
+		getView().grid.cells.clear();
+		
+		
+		return null;
 	}
 
 	private class RunThumbsTask extends
@@ -94,12 +111,12 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		long start = System.currentTimeMillis();
 
-		RunThumbsTask(org.jdesktop.application.Application app) {
+		RunThumbsTask(org.jdesktop.application.Application app)
+				throws FileNotFoundException {
 
 			super(app);
 
-			is = ThumbsApp.class
-					.getResourceAsStream("resources/10-2009-000-00-00.1 v1-6.pdf");
+			is = new FileInputStream(new File("/home/fabiano/teste.pdf"));
 
 		}
 
@@ -114,7 +131,7 @@ public class ThumbsApp extends SingleFrameApplication {
 
 				JXImagePanel panel = new JXImagePanel();
 				panel.setSize(image.getWidth(), image.getHeight());
-				panel.setImage((Image)image);
+				panel.setImage((Image) image);
 
 				JCell<Double> cell = getView().grid.getCell(panel,
 						getView().grid.cells.size() + 1);
@@ -136,6 +153,7 @@ public class ThumbsApp extends SingleFrameApplication {
 				PageProcessor<Object> processor = new PageProcessor<Object>() {
 
 					private int counter = 0;
+					private boolean stop = false;
 
 					@Override
 					public Object process(PdfDictionary page, Integer pageNumber)
@@ -165,8 +183,8 @@ public class ThumbsApp extends SingleFrameApplication {
 					}
 
 					@Override
-					public Boolean stop() {
-						return false;
+					public void stop() {
+						stop = true;
 					}
 
 					@Override
@@ -174,14 +192,19 @@ public class ThumbsApp extends SingleFrameApplication {
 						RunThumbsTask.this.setProgress(progress / 100);
 					}
 
+					@Override
+					public Boolean isStopped() {
+						return stop;
+					}
+
 				};
 
 				iterator.iterate(processor);
-
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
+			
 			return null;
 
 		}
