@@ -94,9 +94,7 @@ public class ThumbsApp extends SingleFrameApplication {
 		}
 		
 		int count = getView().grid.contentPanel.getComponentCount();
-		for (int i = 0; i < count; i++) {
-			System.out.println(getView().grid.contentPanel.getComponent(i));
-		}
+		getView().grid.contentPanel.removeAll();
 		getView().grid.contentPanel.revalidate();
 		getView().grid.cells.clear();
 		
