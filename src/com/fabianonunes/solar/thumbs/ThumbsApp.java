@@ -7,6 +7,7 @@ import ilist.ui.generic.grid.JCell;
 
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
