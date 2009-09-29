@@ -142,8 +142,6 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 			super.processMouseEvent(e, l);
 
-			getInputContext().dispatchEvent(e);
-
 			if (e.getID() == MouseEvent.MOUSE_CLICKED) {
 
 				getGrid().inCell = true;

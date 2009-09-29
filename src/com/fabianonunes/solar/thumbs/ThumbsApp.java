@@ -7,7 +7,6 @@ import ilist.ui.generic.grid.JCell;
 
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +30,7 @@ import br.jus.tst.sesdi2.pdf.PageProcessor;
 import br.jus.tst.sesdi2.pdf.PdfImageUtils;
 import br.jus.tst.sesdi2.pdf.PdfPageIterator;
 
+import com.fabianonunes.solar.thumbs.model.PageImage;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfReader;
 
@@ -86,55 +86,49 @@ public class ThumbsApp extends SingleFrameApplication {
 	}
 
 	@Action
-	public Task<Object, BufferedImage> runThumbs() throws FileNotFoundException {
-		if(!runned ){
+	public Task<Object, PageImage> runThumbs() throws FileNotFoundException {
+		if (!runned) {
 			runned = true;
 			return new RunThumbsTask(org.jdesktop.application.Application
 					.getInstance(com.fabianonunes.solar.thumbs.ThumbsApp.class));
 		}
-		
-		int count = getView().grid.contentPanel.getComponentCount();
-		getView().grid.contentPanel.removeAll();
-		getView().grid.contentPanel.revalidate();
-		getView().grid.cells.clear();
-		
-		
+
 		return null;
 	}
 
 	private class RunThumbsTask extends
-			org.jdesktop.application.Task<Object, BufferedImage> {
+			org.jdesktop.application.Task<Object, PageImage> {
 
 		InputStream is;
 
 		long start = System.currentTimeMillis();
+
+		private PdfReader reader;
 
 		RunThumbsTask(org.jdesktop.application.Application app)
 				throws FileNotFoundException {
 
 			super(app);
 
-			is = new FileInputStream(new File("/home/fabiano/teste.pdf"));
+			is = new FileInputStream(new File(
+					"/home/fabiano/205480-2009-000-00-00.2.pdf"));
 
 		}
 
 		@Override
-		protected void process(List<BufferedImage> values) {
+		protected void process(List<PageImage> values) {
 			super.process(values);
 
-			for (BufferedImage image : values) {
-
-				Histogram histogram = (Histogram) JAI
-						.create("histogram", image).getProperty("histogram");
+			for (PageImage pageImage : values) {
 
 				JXImagePanel panel = new JXImagePanel();
-				panel.setSize(image.getWidth(), image.getHeight());
-				panel.setImage((Image) image);
+				panel.setSize(pageImage.getImage().getWidth(), pageImage
+						.getImage().getHeight());
+				panel.setImage((Image) pageImage.getImage());
 
 				JCell<Double> cell = getView().grid.getCell(panel,
 						getView().grid.cells.size() + 1);
-				Double key = histogram.getStandardDeviation()[0];//
-				cell.setComparable(key);
+				cell.setComparable(pageImage.getStandardDeviation());
 
 				getView().grid.addCell(cell);
 
@@ -145,8 +139,10 @@ public class ThumbsApp extends SingleFrameApplication {
 
 			try {
 
+				reader = new PdfReader(is);
+
 				PdfPageIterator<Object> iterator = new PdfPageIterator<Object>(
-						new PdfReader(is));
+						reader);
 
 				PageProcessor<Object> processor = new PageProcessor<Object>() {
 
@@ -170,12 +166,28 @@ public class ThumbsApp extends SingleFrameApplication {
 						RenderingHints hints = new RenderingHints(
 								JAI.KEY_INTERPOLATION, interpolation);
 
-						float scale = (float) 250 / imageOfPage.getHeight();
+						float scale = (float) 300 / imageOfPage.getHeight();
 
 						rop = SubsampleBinaryToGrayDescriptor.create(
 								imageOfPage, scale, scale, hints);
 
-						publish(((RenderedOp) rop).getAsBufferedImage());
+						Histogram histogram = (Histogram) JAI.create(
+								"histogram", rop).getProperty("histogram");
+						Double key = histogram.getStandardDeviation()[0];
+
+						if (key <= 22.46d) {
+
+							PageImage pi = new PageImage();
+							pi
+									.setImage(((RenderedOp) rop)
+											.getAsBufferedImage());
+							pi.setPageNumber(pageNumber);
+							pi.setStandardDeviation(key);
+
+							publish(pi);
+						}
+
+						// 23.459921323655763
 
 						return null;
 					}
@@ -198,11 +210,11 @@ public class ThumbsApp extends SingleFrameApplication {
 				};
 
 				iterator.iterate(processor);
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			return null;
 
 		}
@@ -211,6 +223,8 @@ public class ThumbsApp extends SingleFrameApplication {
 		protected void finished() {
 			super.finished();
 			System.out.println(System.currentTimeMillis() - start);
+			reader.close();
+			reader = null;
 		}
 
 		@Override
