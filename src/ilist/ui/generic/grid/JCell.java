@@ -32,26 +32,31 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 	 *            the component inside the grid, given by the renderer
 	 */
 	public JCell(JGrid<T> grid, int index, JComponent component) {
-		
+
 		super(true);
 
 		setGrid(grid);
-		
+
 		this.index = index;
 		this.component = component;
 		this.component.setPreferredSize(getGrid().getCellSize());
 		this.layer = new JXLayer<JComponent>(component);
-		
+
 		CellLayerUI<JComponent> selectionLayerUI = new CellLayerUI<JComponent>(
 				index);
-		getGrid().getSelectionModel().addListSelectionListener(selectionLayerUI);
-		
+		getGrid().getSelectionModel()
+				.addListSelectionListener(selectionLayerUI);
+
 		this.layer.setUI(selectionLayerUI);
 		this.setLayout(new BorderLayout());
 		this.add(layer, BorderLayout.CENTER);
 		this.setPreferredSize(getGrid().getCellSize());
 		this.setOpaque(false);
 
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 	public JComponent getComponent() {
@@ -87,7 +92,8 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 	}
 
 	/**
-	 * @param grid the grid to set
+	 * @param grid
+	 *            the grid to set
 	 */
 	public void setGrid(JGrid<T> grid) {
 		this.grid = grid;
@@ -104,7 +110,7 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 			AbstractLayerUI<V> implements ListSelectionListener {
 
 		private static final long serialVersionUID = 1L;
-		
+
 		private int index;
 
 		public CellLayerUI(int index) {
@@ -135,7 +141,7 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 					| AWTEvent.MOUSE_MOTION_EVENT_MASK
 					| AWTEvent.KEY_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
 			// AWTEvent.MOUSE_WHEEL_EVENT_MASK
-			
+
 		}
 
 		protected void processMouseEvent(MouseEvent e, JXLayer<? extends V> l) {
@@ -148,16 +154,20 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 				if (e.isControlDown()) {
 
-					getGrid().getSelectionModel().addSelectionInterval(index, index);
+					getGrid().getSelectionModel().addSelectionInterval(index,
+							index);
 
 				} else if (e.isShiftDown()) {
 
-					getGrid().getSelectionModel().setSelectionInterval(index,
-							getGrid().getSelectionModel().getLeadSelectionIndex());
+					getGrid().getSelectionModel().setSelectionInterval(
+							index,
+							getGrid().getSelectionModel()
+									.getLeadSelectionIndex());
 
 				} else {
 
-					getGrid().getSelectionModel().setSelectionInterval(index, index);
+					getGrid().getSelectionModel().setSelectionInterval(index,
+							index);
 
 				}
 			}

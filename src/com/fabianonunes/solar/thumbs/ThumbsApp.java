@@ -5,13 +5,12 @@ package com.fabianonunes.solar.thumbs;
 
 import ilist.ui.generic.grid.JCell;
 
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -25,7 +24,6 @@ import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.Task;
-import org.jdesktop.swingx.JXImagePanel;
 
 import br.jus.tst.sesdi2.pdf.PageProcessor;
 import br.jus.tst.sesdi2.pdf.PdfImageUtils;
@@ -87,7 +85,7 @@ public class ThumbsApp extends SingleFrameApplication {
 	}
 
 	@Action
-	public Task<Object, PageImage> runThumbs() throws FileNotFoundException {
+	public Task<Object, PageImage> runThumbs() throws IOException {
 		if (!runned) {
 			runned = true;
 			return new RunThumbsTask(org.jdesktop.application.Application
@@ -100,19 +98,19 @@ public class ThumbsApp extends SingleFrameApplication {
 	private class RunThumbsTask extends
 			org.jdesktop.application.Task<Object, PageImage> {
 
-		InputStream is;
+		File f;
+		//138305
 
 		long start = System.currentTimeMillis();
 
 		private PdfReader reader;
 
 		RunThumbsTask(org.jdesktop.application.Application app)
-				throws FileNotFoundException {
+				throws IOException {
 
 			super(app);
 
-			is = new FileInputStream(new File(
-					"/home/fabiano/205480-2009-000-00-00.2.pdf"));
+			f = new File("/home/fabiano/205480-2009-000-00-00.2.pdf");
 
 		}
 
@@ -122,12 +120,7 @@ public class ThumbsApp extends SingleFrameApplication {
 
 			for (PageImage pageImage : values) {
 
-				JXImagePanel panel = new JXImagePanel();
-				panel.setSize(pageImage.getImage().getWidth(), pageImage
-						.getImage().getHeight());
-				panel.setImage((Image) pageImage.getImage());
-
-				JCell<Double> cell = getView().grid.getCell(panel,
+				JCell<Double> cell = getView().grid.getCell(pageImage,
 						getView().grid.cells.size() + 1);
 				cell.setComparable(pageImage.getStandardDeviation());
 
@@ -140,7 +133,7 @@ public class ThumbsApp extends SingleFrameApplication {
 
 			try {
 
-				reader = new PdfReader(is);
+				reader = new PdfReader(f.getAbsolutePath());
 
 				PdfPageIterator<Object> iterator = new PdfPageIterator<Object>(
 						reader);
@@ -226,12 +219,24 @@ public class ThumbsApp extends SingleFrameApplication {
 			System.out.println(System.currentTimeMillis() - start);
 			reader.close();
 			reader = null;
+			f = null;
+			System.gc();
 		}
 
 		@Override
 		protected void succeeded(Object result) {
-			// Runs on the EDT. Update the GUI based on
-			// the result computed by doInBackground().
+
+			int childrenLenght = getView().grid.contentPanel
+					.getComponentCount();
+
+			for (int i = 0; i < childrenLenght; i++) {
+
+				JCell<?> cell = (JCell<?>) getView().grid.contentPanel
+						.getComponent(i);
+				cell.setIndex(i);
+
+			}
+
 		}
 
 	}

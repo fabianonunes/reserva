@@ -46,7 +46,7 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 	private Map<Class<?>, GridCellRenderer> renderers = new HashMap<Class<?>, GridCellRenderer>();
 	private ListSelectionModel selectionModel = new DefaultListSelectionModel();
 	private FlowLayout layout;
-	private Dimension cellSize = new Dimension(260, 330);
+	private Dimension cellSize = new Dimension(250, 330);
 	boolean inCell = false;
 
 	public SortedSet<JCell<C>> cells = Collections
@@ -107,16 +107,26 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 		JComponent result;
 		GridCellRenderer r = renderers.get(value.getClass());
 
-		if (r == null)
-			if (getDefaultRenderer() == null)
+		if (r == null) {
+
+			if (getDefaultRenderer() == null) {
+
 				result = new JPanel(true);
-			else
+				
+			} else {
+
 				result = getDefaultRenderer().getGridCellRendererComponent(
 						this, value, getCellSize(),
 						getSelectionModel().isSelectedIndex(pos), false, pos);
-		else
+
+			}
+
+		} else {
+
 			result = r.getGridCellRendererComponent(this, value, getCellSize(),
 					getSelectionModel().isSelectedIndex(pos), false, pos);
+
+		}
 
 		return new JCell<C>(this, pos, result);
 	}
