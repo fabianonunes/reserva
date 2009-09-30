@@ -9,9 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import javax.media.jai.Histogram;
@@ -40,7 +38,6 @@ public class ThumbsApp extends SingleFrameApplication {
 
 	private ThumbsView view;
 	private boolean runned = false;
-
 	/**
 	 * At startup create and show the main frame of the application.
 	 */

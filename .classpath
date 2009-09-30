@@ -14,6 +14,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JXLayer"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SwingX 1.0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Cleaner"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-sun-1.6.0.15"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
