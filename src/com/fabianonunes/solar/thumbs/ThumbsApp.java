@@ -38,6 +38,7 @@ public class ThumbsApp extends SingleFrameApplication {
 
 	private ThumbsView view;
 	private boolean runned = false;
+
 	/**
 	 * At startup create and show the main frame of the application.
 	 */
@@ -81,7 +82,7 @@ public class ThumbsApp extends SingleFrameApplication {
 		return this.view;
 	}
 
-	@Action
+	@Action(enabledProperty="asdf")
 	public Task<Object, PageImage> runThumbs() throws IOException {
 		if (!runned) {
 			runned = true;
@@ -96,7 +97,7 @@ public class ThumbsApp extends SingleFrameApplication {
 			org.jdesktop.application.Task<Object, PageImage> {
 
 		File f;
-		//138305
+		// 138305
 
 		long start = System.currentTimeMillis();
 
