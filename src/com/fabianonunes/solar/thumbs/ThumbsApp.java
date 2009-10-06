@@ -9,27 +9,37 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.media.jai.Histogram;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
+import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.SubsampleBinaryToGrayDescriptor;
+import javax.swing.JFileChooser;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.Task;
+import org.jdesktop.application.Task.BlockingScope;
 
+import br.jus.tst.sesdi2.file.selector.gui.FileSelectorDialog;
 import br.jus.tst.sesdi2.pdf.PageProcessor;
 import br.jus.tst.sesdi2.pdf.PdfImageUtils;
 import br.jus.tst.sesdi2.pdf.PdfPageIterator;
 
 import com.fabianonunes.solar.thumbs.model.PageImage;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 
 /**
  * The main class of the application.
@@ -38,6 +48,9 @@ public class ThumbsApp extends SingleFrameApplication {
 
 	private ThumbsView view;
 	private boolean runned = false;
+	ArrayList<Integer> lightPages;
+	private PdfReader reader;
+	File file;
 
 	/**
 	 * At startup create and show the main frame of the application.
@@ -82,33 +95,108 @@ public class ThumbsApp extends SingleFrameApplication {
 		return this.view;
 	}
 
-	@Action(enabledProperty="asdf")
-	public Task<Object, PageImage> runThumbs() throws IOException {
+	@Action(block = BlockingScope.COMPONENT)
+	public Task<Object, PageImage> runThumbs() throws IOException,
+			DocumentException {
+
 		if (!runned) {
+			file = null;
 			runned = true;
 			return new RunThumbsTask(org.jdesktop.application.Application
 					.getInstance(com.fabianonunes.solar.thumbs.ThumbsApp.class));
 		}
 
+		ArrayList<String> pagesToKeepInString = getView().grid.getNames();
+		ArrayList<Integer> pagesToKeep = new ArrayList<Integer>();
+
+		for (String name : pagesToKeepInString) {
+			pagesToKeep.add(Integer.parseInt(name));
+		}
+
+		PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(
+				buildOutputFilename()));
+
+		int numberOfPages = reader.getNumberOfPages();
+
+		for (int i = 1; i <= numberOfPages; i++) {
+
+			if (pagesToKeep.contains(i)) {
+				continue;
+			}
+
+			if (!lightPages.contains(i)) {
+				pagesToKeep.add(i);
+			}
+
+		}
+
+		Collections.sort(pagesToKeep);
+
+		stamp.getReader().selectPages(pagesToKeep);
+
+		stamp.close();
+
+		reader.close();
+
+		System.gc();
+
 		return null;
+	}
+
+	private String buildOutputFilename() {
+
+		if (file != null) {
+
+			String name = FilenameUtils.getBaseName(file.getAbsolutePath());
+			String extension = FilenameUtils.getExtension(file
+					.getAbsolutePath());
+
+			String out = file.getParent() + File.separator + name + "[L]."
+					+ extension;
+
+			System.out.println(out);
+
+			return out;
+
+		}
+
+		return "";
+	}
+
+	public File selectFile() {
+
+		FileSelectorDialog c = new FileSelectorDialog(getApplication()
+				.getMainFrame(), true);
+
+		JFileChooser fileChooser = c.getJFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fileChooser.setMultiSelectionEnabled(false);
+
+		int rv = fileChooser.showOpenDialog(getApplication().getMainFrame());
+
+		if (rv == JFileChooser.APPROVE_OPTION) {
+
+			return fileChooser.getSelectedFile();
+
+		}
+
+		return null;
+
 	}
 
 	private class RunThumbsTask extends
 			org.jdesktop.application.Task<Object, PageImage> {
 
-		File f;
-		// 138305
-
 		long start = System.currentTimeMillis();
-
-		private PdfReader reader;
 
 		RunThumbsTask(org.jdesktop.application.Application app)
 				throws IOException {
 
 			super(app);
 
-			f = new File("/home/fabiano/205480-2009-000-00-00.2.pdf");
+			lightPages = new ArrayList<Integer>();
+
+			file = selectFile();
 
 		}
 
@@ -129,9 +217,13 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		protected Object doInBackground() {
 
+			if (file == null) {
+				return null;
+			}
+
 			try {
 
-				reader = new PdfReader(f.getAbsolutePath());
+				reader = new PdfReader(file.getAbsolutePath());
 
 				PdfPageIterator<Object> iterator = new PdfPageIterator<Object>(
 						reader);
@@ -158,30 +250,58 @@ public class ThumbsApp extends SingleFrameApplication {
 						RenderingHints hints = new RenderingHints(
 								JAI.KEY_INTERPOLATION, interpolation);
 
-						float scale = (float) 300 / imageOfPage.getHeight();
+						float scale = (float) 350 / imageOfPage.getHeight();
 
 						rop = SubsampleBinaryToGrayDescriptor.create(
 								imageOfPage, scale, scale, hints);
 
+						Float margin;
+
+						margin = 0.10f * Math.min(rop.getWidth(), rop
+								.getHeight());
+
+						RenderedOp croppped = CropDescriptor.create(rop,
+								margin * 2, margin,
+								rop.getWidth() - margin * 4, rop.getHeight()
+										- margin * 2, null);
+
 						Histogram histogram = (Histogram) JAI.create(
-								"histogram", rop).getProperty("histogram");
+								"histogram", croppped).getProperty("histogram");
 						Double key = histogram.getStandardDeviation()[0];
 
-						if (key <= 22.46d) {
+						if (key <= 30d) {
 
-							PageImage pi = new PageImage();
-							pi
-									.setImage(((RenderedOp) rop)
-											.getAsBufferedImage());
-							pi.setPageNumber(pageNumber);
-							pi.setStandardDeviation(key);
+							margin = 0.10f * Math.min(rop.getWidth(), rop
+									.getHeight());
 
-							publish(pi);
+							RenderedOp topCropped = CropDescriptor.create(rop,
+									margin, 0f, rop.getWidth() - margin * 2,
+									rop.getHeight() * 0.20f, null);
+
+							Histogram topHistogram = (Histogram) JAI.create(
+									"histogram", topCropped).getProperty(
+									"histogram");
+
+							Double topKey = topHistogram.getStandardDeviation()[0];
+
+							if (topKey < 10) {
+
+								PageImage pi = new PageImage();
+								pi.setImage(((RenderedOp) rop)
+										.getAsBufferedImage());
+								pi.setPageNumber(pageNumber);
+								pi.setStandardDeviation(key);
+
+								publish(pi);
+
+								lightPages.add(pageNumber);
+
+							}
+
 						}
 
-						// 23.459921323655763
-
 						return null;
+						
 					}
 
 					@Override
@@ -215,9 +335,6 @@ public class ThumbsApp extends SingleFrameApplication {
 		protected void finished() {
 			super.finished();
 			System.out.println(System.currentTimeMillis() - start);
-			reader.close();
-			reader = null;
-			f = null;
 			System.gc();
 		}
 

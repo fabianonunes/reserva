@@ -15,5 +15,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SwingX 1.0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Cleaner"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FileSelector"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -152,12 +152,7 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 				getGrid().inCell = true;
 
-				if (e.isControlDown()) {
-
-					getGrid().getSelectionModel().addSelectionInterval(index,
-							index);
-
-				} else if (e.isShiftDown()) {
+				if (e.isShiftDown()) {
 
 					getGrid().getSelectionModel().setSelectionInterval(
 							index,
@@ -166,8 +161,26 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 				} else {
 
-					getGrid().getSelectionModel().setSelectionInterval(index,
-							index);
+					// Bloco else original
+					// getGrid().getSelectionModel().setSelectionInterval(index,
+					// index);
+
+					// bloco if(isControlDown())
+					if (getGrid().getSelectionModel().isSelectedIndex(index)) {
+
+						getGrid().getSelectionModel().removeSelectionInterval(
+								index, index);
+
+						getGrid().getNames().remove(getComponent().getName());
+
+					} else {
+
+						getGrid().getSelectionModel().addSelectionInterval(
+								index, index);
+
+						getGrid().getNames().add(getComponent().getName());
+
+					}
 
 				}
 			}

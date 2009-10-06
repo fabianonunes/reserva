@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +47,10 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 	private Map<Class<?>, GridCellRenderer> renderers = new HashMap<Class<?>, GridCellRenderer>();
 	private ListSelectionModel selectionModel = new DefaultListSelectionModel();
 	private FlowLayout layout;
-	private Dimension cellSize = new Dimension(250, 330);
+	private Dimension cellSize = new Dimension(300, 380);
 	boolean inCell = false;
+
+	private ArrayList<String> names = new ArrayList<String>();
 
 	public SortedSet<JCell<C>> cells = Collections
 			.synchronizedSortedSet(new TreeSet<JCell<C>>());
@@ -112,7 +115,7 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 			if (getDefaultRenderer() == null) {
 
 				result = new JPanel(true);
-				
+
 			} else {
 
 				result = getDefaultRenderer().getGridCellRendererComponent(
@@ -282,6 +285,14 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 
 		return false;
 
+	}
+
+	public void setNames(ArrayList<String> names) {
+		this.names = names;
+	}
+
+	public ArrayList<String> getNames() {
+		return names;
 	}
 
 	/**

@@ -45,6 +45,7 @@ public class ItemRendererWrapper implements GridCellRenderer {
 		panel.add(inside);
 
 		JLabel label = new JLabel(pageImage.getPageNumber().toString());
+		panel.setName(pageImage.getPageNumber().toString());
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(label);
 
