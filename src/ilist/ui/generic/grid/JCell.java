@@ -23,6 +23,7 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 	private JXLayer<JComponent> layer;
 	private T comparable;
 	private JGrid<T> grid;
+
 	private int index;
 
 	/**
@@ -79,7 +80,12 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 	@Override
 	public int compareTo(JCell<T> o) {
-		return getComparable().compareTo(o.getComparable());
+		int clash = getComparable().compareTo(o.getComparable());
+		if(clash == 0){
+			return -1;
+		} else {
+			return clash;
+		}
 	}
 
 	/**

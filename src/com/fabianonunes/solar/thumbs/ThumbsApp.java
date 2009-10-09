@@ -101,7 +101,7 @@ public class ThumbsApp extends SingleFrameApplication {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Action(block = BlockingScope.APPLICATION)
+	@Action(block = BlockingScope.COMPONENT)
 	public Task<Object, PageImage> runThumbs() throws IOException,
 			DocumentException {
 
@@ -141,24 +141,6 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		}
 
-		Document document = new Document();
-
-		PdfCopy copy = new PdfCopy(document, new FileOutputStream(new File(
-				buildOutputFilename("[r]"))));
-
-		document.open();
-
-		for (Integer pageRemoved : pagesToRemove) {
-			PdfImportedPage p = copy.getImportedPage(reader, pageRemoved);
-			try {
-				copy.addPage(p);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		document.close();
-
 		List<HashMap<String, String>> bookmarks = SimpleBookmark
 				.getBookmark(reader);
 
@@ -178,6 +160,39 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		}
 
+		Document document = new Document();
+
+		PdfCopy copy = new PdfCopy(document, new FileOutputStream(new File(
+				buildOutputFilename("[r]"))));
+
+		document.open();
+
+		Collections.sort(pagesToRemove);
+
+		int counter = 1;
+
+		for (Integer pageRemoved : pagesToRemove) {
+
+			if (counter++ == 124) {
+
+				System.out.println("adsf");
+				System.out.println("asdf");
+
+			}
+
+			if (pagesToKeep.contains(pageRemoved)) {
+				continue;
+			}
+			PdfImportedPage p = copy.getImportedPage(reader, pageRemoved);
+			try {
+				copy.addPage(p);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		document.close();
+
 		Collections.sort(pagesToKeep);
 
 		stamp.getReader().selectPages(pagesToKeep);
@@ -185,8 +200,6 @@ public class ThumbsApp extends SingleFrameApplication {
 		stamp.close();
 
 		reader.close();
-
-		System.gc();
 
 		return null;
 	}
@@ -285,6 +298,10 @@ public class ThumbsApp extends SingleFrameApplication {
 					public Object process(PdfDictionary page, Integer pageNumber)
 							throws Throwable {
 
+						if (pageNumber == 270) {
+							System.out.println("asdf");
+						}
+
 						counter++;
 
 						BufferedImage imageOfPage = PdfImageUtils
@@ -303,10 +320,62 @@ public class ThumbsApp extends SingleFrameApplication {
 						rop = SubsampleBinaryToGrayDescriptor.create(
 								imageOfPage, scale, scale, hints);
 
-						Float margin;
+						Double key = getKey(0.10f, rop);
+						Double topKey = getTopKey(0.08f, rop);
+						Double bottomKey = getBottomKey(0.08f, rop);
 
-						margin = 0.10f * Math.min(rop.getWidth(), rop
-								.getHeight());
+						System.out.println(pageNumber + ";" + key + ";"
+								+ topKey + ";" + bottomKey);
+
+						Boolean test = false;
+
+						if (topKey <= 8d && key < 15d) {
+							test = true;
+						}
+
+						if (key <= 19.8d && topKey <= 17) {
+
+							test = true;
+
+						}
+
+						if (key > 19.8d && key <= 21d) {
+
+							if (topKey <= 18d) {
+								test = true;
+							}
+
+						} else if (key < 26d) {
+
+							if (bottomKey + topKey < 31d) {
+								test = true;
+							}
+
+						}
+
+						if (test) {
+
+							PageImage pi = new PageImage();
+							pi
+									.setImage(((RenderedOp) rop)
+											.getAsBufferedImage());
+							pi.setPageNumber(pageNumber);
+							pi.setStandardDeviation(key);
+
+							publish(pi);
+
+							lightPages.add(pageNumber);
+
+						}
+
+						return null;
+
+					}
+
+					private Double getKey(float margin, RenderedImage rop) {
+
+						margin = margin
+								* Math.min(rop.getWidth(), rop.getHeight());
 
 						RenderedOp croppped = CropDescriptor.create(rop,
 								margin * 2, margin,
@@ -315,53 +384,54 @@ public class ThumbsApp extends SingleFrameApplication {
 
 						Histogram histogram = (Histogram) JAI.create(
 								"histogram", croppped).getProperty("histogram");
-						Double key = histogram.getStandardDeviation()[0];
 
-						if (key <= 30d) {
+						return histogram.getStandardDeviation()[0];
 
-							margin = 0.10f * Math.min(rop.getWidth(), rop
-									.getHeight());
+					}
 
-							RenderedOp topCropped = CropDescriptor.create(rop,
-									margin, 0f, rop.getWidth() - margin * 2,
-									rop.getHeight() * 0.20f, null);
+					private Double getTopKey(float margin, RenderedImage rop) {
 
-							Histogram topHistogram = (Histogram) JAI.create(
-									"histogram", topCropped).getProperty(
-									"histogram");
+						float pageWidth = rop.getWidth();
 
-							Double topKey = topHistogram.getStandardDeviation()[0];
+						float pageHeight = rop.getHeight();
 
-							Double topLimit;
+						margin = margin * Math.min(pageWidth, pageHeight);
 
-							if (key > 21) {
-								topLimit = 5d;
-							} else {
-								topLimit = 9d;
-							}
-							
-							//209-677
+						float x = margin * 2;
+						float width = pageWidth - 2 * x;
 
-							if (topKey < topLimit) {
+						float y = margin;
+						float height = pageHeight * 0.20f;
 
-								PageImage pi = new PageImage();
-								pi.setImage(((RenderedOp) rop)
-										.getAsBufferedImage());
-								pi.setPageNumber(pageNumber);
-								pi.setStandardDeviation(key);
+						RenderedOp topCropped = CropDescriptor.create(rop, x,
+								y, width, height, null);
 
-								System.out.println(pageNumber + "-" + key + "-"
-										+ topKey);
+						Histogram topHistogram = (Histogram) JAI.create(
+								"histogram", topCropped).getProperty(
+								"histogram");
 
-								publish(pi);
+						return topHistogram.getStandardDeviation()[0];
 
-								lightPages.add(pageNumber);
+					}
 
-							}
+					private Double getBottomKey(Float margin, RenderedImage rop) {
 
-						}
+						float pageWidth = rop.getWidth();
+						float x = pageWidth * margin * 2;
+						float width = pageWidth - 2 * x;
 
-						return null;
+						float pageHeight = rop.getHeight();
+						float y = (float) (2 * pageHeight / 3);
+						float height = (pageHeight / 3) - pageHeight * margin;
+
+						RenderedOp bottomCropped = CropDescriptor.create(rop,
+								x, y, width, height, null);
+
+						Histogram bottomHistogram = (Histogram) JAI.create(
+								"histogram", bottomCropped).getProperty(
+								"histogram");
+
+						return bottomHistogram.getStandardDeviation()[0];
 
 					}
 
