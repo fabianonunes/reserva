@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.media.jai.Histogram;
@@ -36,10 +37,14 @@ import br.jus.tst.sesdi2.pdf.PdfImageUtils;
 import br.jus.tst.sesdi2.pdf.PdfPageIterator;
 
 import com.fabianonunes.solar.thumbs.model.PageImage;
+import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.SimpleBookmark;
 
 /**
  * The main class of the application.
@@ -95,7 +100,8 @@ public class ThumbsApp extends SingleFrameApplication {
 		return this.view;
 	}
 
-	@Action(block = BlockingScope.COMPONENT)
+	@SuppressWarnings("unchecked")
+	@Action(block = BlockingScope.APPLICATION)
 	public Task<Object, PageImage> runThumbs() throws IOException,
 			DocumentException {
 
@@ -114,9 +120,11 @@ public class ThumbsApp extends SingleFrameApplication {
 		}
 
 		PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(
-				buildOutputFilename()));
+				buildOutputFilename("[L]")));
 
 		int numberOfPages = reader.getNumberOfPages();
+
+		ArrayList<Integer> pagesToRemove = new ArrayList<Integer>();
 
 		for (int i = 1; i <= numberOfPages; i++) {
 
@@ -126,7 +134,47 @@ public class ThumbsApp extends SingleFrameApplication {
 
 			if (!lightPages.contains(i)) {
 				pagesToKeep.add(i);
+				continue;
 			}
+
+			pagesToRemove.add(i);
+
+		}
+
+		Document document = new Document();
+
+		PdfCopy copy = new PdfCopy(document, new FileOutputStream(new File(
+				buildOutputFilename("[r]"))));
+
+		document.open();
+
+		for (Integer pageRemoved : pagesToRemove) {
+			PdfImportedPage p = copy.getImportedPage(reader, pageRemoved);
+			try {
+				copy.addPage(p);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		document.close();
+
+		List<HashMap<String, String>> bookmarks = SimpleBookmark
+				.getBookmark(reader);
+
+		for (HashMap<String, String> hashMap : bookmarks) {
+
+			String pageAtt = hashMap.get("Page");
+			if (pageAtt == null) {
+				continue;
+			}
+
+			pageAtt = pageAtt.substring(0, pageAtt.indexOf(" ")).trim();
+
+			Integer page = Integer.parseInt(pageAtt);
+			if (!pagesToKeep.contains(page))
+				pagesToKeep.add(page);
+			System.out.println(page + ":" + hashMap.get("Page"));
 
 		}
 
@@ -143,7 +191,7 @@ public class ThumbsApp extends SingleFrameApplication {
 		return null;
 	}
 
-	private String buildOutputFilename() {
+	private String buildOutputFilename(String suffix) {
 
 		if (file != null) {
 
@@ -151,8 +199,8 @@ public class ThumbsApp extends SingleFrameApplication {
 			String extension = FilenameUtils.getExtension(file
 					.getAbsolutePath());
 
-			String out = file.getParent() + File.separator + name + "[L]."
-					+ extension;
+			String out = file.getParent() + File.separator + name + suffix
+					+ "." + extension;
 
 			System.out.println(out);
 
@@ -284,13 +332,26 @@ public class ThumbsApp extends SingleFrameApplication {
 
 							Double topKey = topHistogram.getStandardDeviation()[0];
 
-							if (topKey < 10) {
+							Double topLimit;
+
+							if (key > 21) {
+								topLimit = 5d;
+							} else {
+								topLimit = 9d;
+							}
+							
+							//209-677
+
+							if (topKey < topLimit) {
 
 								PageImage pi = new PageImage();
 								pi.setImage(((RenderedOp) rop)
 										.getAsBufferedImage());
 								pi.setPageNumber(pageNumber);
 								pi.setStandardDeviation(key);
+
+								System.out.println(pageNumber + "-" + key + "-"
+										+ topKey);
 
 								publish(pi);
 
@@ -301,7 +362,7 @@ public class ThumbsApp extends SingleFrameApplication {
 						}
 
 						return null;
-						
+
 					}
 
 					@Override

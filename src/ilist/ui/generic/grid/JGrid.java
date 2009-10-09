@@ -28,21 +28,11 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
 
-/**
- * Display a list of renderer on a grid of cells
- * 
- * @see JGrid#build()
- * @see JGrid#setDefaultRenderer(GridCellRenderer)
- * @see JGrid#setRenderer(Class, GridCellRenderer)
- * 
- * @author Christophe Le Besnerais
- */
 public class JGrid<C extends Comparable<C>> extends JPanel implements
 		Scrollable {
 
 	private static final long serialVersionUID = 1L;
 	public JPanel contentPanel;
-	// public ListModel model;
 	private GridCellRenderer defaultRenderer;
 	private Map<Class<?>, GridCellRenderer> renderers = new HashMap<Class<?>, GridCellRenderer>();
 	private ListSelectionModel selectionModel = new DefaultListSelectionModel();
@@ -55,14 +45,6 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 	public SortedSet<JCell<C>> cells = Collections
 			.synchronizedSortedSet(new TreeSet<JCell<C>>());
 
-	/**
-	 * fill a grid using the given model
-	 * 
-	 * @param model
-	 * @see JGrid#build()
-	 * @see JGrid#setDefaultRenderer(GridCellRenderer)
-	 * @see JGrid#setRenderer(Class, GridCellRenderer)
-	 */
 	public JGrid() {
 
 		super(new BorderLayout(), true);
@@ -73,9 +55,9 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 		this.contentPanel.requestFocusInWindow();
 		this.contentPanel.setOpaque(false);
 
-		JXLayer<JPanel> layer = new JXLayer<JPanel>(contentPanel);
-		layer.setUI(new GridLayerUI<JPanel>());
-		this.add(layer, BorderLayout.CENTER);
+		// JXLayer<JPanel> layer = new JXLayer<JPanel>(contentPanel);
+		// layer.setUI(new GridLayerUI<JPanel>());
+		this.add(contentPanel, BorderLayout.CENTER);
 
 	}
 
@@ -374,11 +356,11 @@ public class JGrid<C extends Comparable<C>> extends JPanel implements
 		protected void processMouseEvent(MouseEvent e, JXLayer<? extends V> l) {
 			super.processMouseEvent(e, l);
 
-			if (!inCell && e.getID() == MouseEvent.MOUSE_CLICKED) {
-				getSelectionModel().clearSelection();
-			}
-
-			inCell = false;
+			// if (!inCell && e.getID() == MouseEvent.MOUSE_CLICKED) {
+			// getSelectionModel().clearSelection();
+			// }
+			//
+			// inCell = false;
 
 			if (e.getID() == MouseEvent.MOUSE_PRESSED) {
 

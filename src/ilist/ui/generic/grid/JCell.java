@@ -19,11 +19,11 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 		Comparable<JCell<T>> {
 
 	private static final long serialVersionUID = 1L;
-	private int index;
 	private JComponent component;
 	private JXLayer<JComponent> layer;
 	private T comparable;
 	private JGrid<T> grid;
+	private int index;
 
 	/**
 	 * @param index
@@ -37,7 +37,6 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 		setGrid(grid);
 
-		this.index = index;
 		this.component = component;
 		this.component.setPreferredSize(getGrid().getCellSize());
 		this.layer = new JXLayer<JComponent>(component);
@@ -55,16 +54,8 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 	}
 
-	public void setIndex(int index) {
-		this.index = index;
-	}
-
 	public JComponent getComponent() {
 		return component;
-	}
-
-	public int getIndex() {
-		return index;
 	}
 
 	public JXLayer<JComponent> getLayer() {
@@ -111,15 +102,12 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 		private static final long serialVersionUID = 1L;
 
-		private int index;
-
 		public CellLayerUI(int index) {
-			this.index = index;
 		}
 
 		protected void paintLayer(Graphics2D g2, JXLayer<? extends V> l) {
 
-			if (getGrid().getSelectionModel().isSelectedIndex(index)) {
+			if (getGrid().getSelectionModel().isSelectedIndex(getIndex())) {
 
 				g2.setPaint(new GradientPaint(0, 0, new Color(234, 247, 252,
 						128), 0, l.getHeight(), new Color(167, 222, 249, 128)));
@@ -150,33 +138,52 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 			if (e.getID() == MouseEvent.MOUSE_CLICKED) {
 
-				getGrid().inCell = true;
+				System.out.println(getIndex());
 
-				if (e.isShiftDown()) {
+				if (e.isControlDown()) {
+
+					// if
+					// (getGrid().getSelectionModel().isSelectedIndex(getIndex()))
+					// {
+					//
+					// getGrid().getSelectionModel().removeSelectionInterval(
+					// getIndex(), getIndex());
+					//
+					// getGrid().getNames().remove(getComponent().getName());
+					//
+					// } else {
+					//
+					// getGrid().getSelectionModel().addSelectionInterval(
+					// getIndex(), getIndex());
+					//
+					// getGrid().getNames().add(getComponent().getName());
+					//
+					// }
+
+				} else if (e.isShiftDown()) {
 
 					getGrid().getSelectionModel().setSelectionInterval(
-							index,
+							getIndex(),
 							getGrid().getSelectionModel()
 									.getLeadSelectionIndex());
 
 				} else {
 
-					// Bloco else original
-					// getGrid().getSelectionModel().setSelectionInterval(index,
-					// index);
+					// getGrid().getSelectionModel().setSelectionInterval(getIndex(),
+					// getIndex());
 
-					// bloco if(isControlDown())
-					if (getGrid().getSelectionModel().isSelectedIndex(index)) {
+					if (getGrid().getSelectionModel().isSelectedIndex(
+							getIndex())) {
 
 						getGrid().getSelectionModel().removeSelectionInterval(
-								index, index);
+								getIndex(), getIndex());
 
 						getGrid().getNames().remove(getComponent().getName());
 
 					} else {
 
 						getGrid().getSelectionModel().addSelectionInterval(
-								index, index);
+								getIndex(), getIndex());
 
 						getGrid().getNames().add(getComponent().getName());
 
@@ -189,9 +196,19 @@ public class JCell<T extends Comparable<T>> extends JPanel implements
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			if (index >= e.getFirstIndex() && index <= e.getLastIndex())
+			if (getIndex() >= e.getFirstIndex()
+					&& getIndex() <= e.getLastIndex())
 				setDirty(true);
 		}
+
+	}
+
+	protected int getIndex() {
+		return index;// getGrid().cells.headSet(this).size();
+	}
+
+	public void setIndex(int i) {
+		this.index = i;
 
 	}
 
