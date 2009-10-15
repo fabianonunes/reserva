@@ -144,19 +144,23 @@ public class ThumbsApp extends SingleFrameApplication {
 		List<HashMap<String, String>> bookmarks = SimpleBookmark
 				.getBookmark(reader);
 
-		for (HashMap<String, String> hashMap : bookmarks) {
+		if (bookmarks != null) {
 
-			String pageAtt = hashMap.get("Page");
-			if (pageAtt == null) {
-				continue;
+			for (HashMap<String, String> hashMap : bookmarks) {
+
+				String pageAtt = hashMap.get("Page");
+				if (pageAtt == null) {
+					continue;
+				}
+
+				pageAtt = pageAtt.substring(0, pageAtt.indexOf(" ")).trim();
+
+				Integer page = Integer.parseInt(pageAtt);
+				if (!pagesToKeep.contains(page))
+					pagesToKeep.add(page);
+				System.out.println(page + ":" + hashMap.get("Page"));
+
 			}
-
-			pageAtt = pageAtt.substring(0, pageAtt.indexOf(" ")).trim();
-
-			Integer page = Integer.parseInt(pageAtt);
-			if (!pagesToKeep.contains(page))
-				pagesToKeep.add(page);
-			System.out.println(page + ":" + hashMap.get("Page"));
 
 		}
 
