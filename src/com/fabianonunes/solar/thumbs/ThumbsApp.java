@@ -101,7 +101,7 @@ public class ThumbsApp extends SingleFrameApplication {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Action(block = BlockingScope.COMPONENT)
+	@Action(block = BlockingScope.WINDOW)
 	public Task<Object, PageImage> runThumbs() throws IOException,
 			DocumentException {
 
