@@ -64,7 +64,5 @@
 		<copy file="${dest_exe_file}" tofile="/home/fabiano/${app}.exe">
 		</copy>
 
-
-
 	</target>
 </project>
