@@ -302,10 +302,6 @@ public class ThumbsApp extends SingleFrameApplication {
 					public Object process(PdfDictionary page, Integer pageNumber)
 							throws Throwable {
 
-						if (pageNumber == 270) {
-							System.out.println("asdf");
-						}
-
 						counter++;
 
 						BufferedImage imageOfPage = PdfImageUtils
@@ -325,15 +321,20 @@ public class ThumbsApp extends SingleFrameApplication {
 								imageOfPage, scale, scale, hints);
 
 						Double key = getKey(0.10f, rop);
+						Double middleKey = getMiddleKey(0.08f, rop);
 						Double topKey = getTopKey(0.08f, rop);
 						Double bottomKey = getBottomKey(0.08f, rop);
 
-						System.out.println(pageNumber + ";" + key + ";"
-								+ topKey + ";" + bottomKey);
+						// System.out.println(pageNumber + ";" + key + ";"
+						// + topKey + ";" + middleKey + ";" + bottomKey);
 
 						Boolean test = false;
 
 						if (topKey <= 8d && key < 15d) {
+							test = true;
+						}
+
+						if (topKey <= 8d && middleKey < 8d) {
 							test = true;
 						}
 
@@ -374,6 +375,30 @@ public class ThumbsApp extends SingleFrameApplication {
 
 						return null;
 
+					}
+
+					private Double getMiddleKey(float margin, RenderedImage rop) {
+
+						float pageWidth = rop.getWidth();
+
+						float pageHeight = rop.getHeight();
+
+						margin = margin * Math.min(pageWidth, pageHeight);
+
+						float x = margin * 2;
+						float width = pageWidth - 2 * x;
+
+						float height = pageHeight * 0.20f;
+						float y = margin + height;
+
+						RenderedOp topCropped = CropDescriptor.create(rop, x,
+								y, width, height, null);
+
+						Histogram topHistogram = (Histogram) JAI.create(
+								"histogram", topCropped).getProperty(
+								"histogram");
+
+						return topHistogram.getStandardDeviation()[0];
 					}
 
 					private Double getKey(float margin, RenderedImage rop) {
