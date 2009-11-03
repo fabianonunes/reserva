@@ -9,8 +9,10 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,6 +25,10 @@ import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.SubsampleBinaryToGrayDescriptor;
 import javax.swing.JFileChooser;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jdesktop.application.Action;
@@ -35,13 +41,20 @@ import br.jus.tst.sesdi2.file.selector.gui.FileSelectorDialog;
 import br.jus.tst.sesdi2.pdf.PageProcessor;
 import br.jus.tst.sesdi2.pdf.PdfImageUtils;
 import br.jus.tst.sesdi2.pdf.PdfPageIterator;
+import br.jus.tst.sesdi2.pdf.cleaner.tools.PdfTools;
 
+import com.fabianonunes.solar.thumbs.amostra.Absoluto;
+import com.fabianonunes.solar.thumbs.amostra.Amostra;
+import com.fabianonunes.solar.thumbs.amostra.ObjectFactory;
+import com.fabianonunes.solar.thumbs.model.PageAttributes;
 import com.fabianonunes.solar.thumbs.model.PageImage;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.SimpleBookmark;
@@ -54,12 +67,11 @@ public class ThumbsApp extends SingleFrameApplication {
 	private ThumbsView view;
 	private boolean runned = false;
 	ArrayList<Integer> lightPages;
+	ArrayList<PageAttributes> attributes;
+	List<Amostra> amostras;
 	private PdfReader reader;
 	File file;
 
-	/**
-	 * At startup create and show the main frame of the application.
-	 */
 	@Override
 	protected void startup() {
 		setView(new ThumbsView(this));
@@ -67,27 +79,10 @@ public class ThumbsApp extends SingleFrameApplication {
 
 	}
 
-	/**
-	 * This method is to initialize the specified window by injecting resources.
-	 * Windows shown in our application come fully initialized from the GUI
-	 * builder, so this additional configuration is not needed.
-	 */
-	@Override
-	protected void configureWindow(java.awt.Window root) {
-	}
-
-	/**
-	 * A convenient static getter for the application instance.
-	 * 
-	 * @return the instance of ThumbsApp
-	 */
 	public static ThumbsApp getApplication() {
 		return Application.getInstance(ThumbsApp.class);
 	}
 
-	/**
-	 * Main method launching the application.
-	 */
 	public static void main(String[] args) {
 		launch(ThumbsApp.class, args);
 	}
@@ -112,6 +107,8 @@ public class ThumbsApp extends SingleFrameApplication {
 					.getInstance(com.fabianonunes.solar.thumbs.ThumbsApp.class));
 		}
 
+		amostras = new ArrayList<Amostra>();
+
 		ArrayList<String> pagesToKeepInString = getView().grid.getNames();
 		ArrayList<Integer> pagesToKeep = new ArrayList<Integer>();
 
@@ -128,16 +125,35 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		for (int i = 1; i <= numberOfPages; i++) {
 
+			PageAttributes att = attributes.get(i);
+
+			reader.getPageContent(i);
+
+			Amostra amostra = new Amostra();
+
+			if (att != null) {
+
+				amostra.setBottom(BigDecimal.valueOf(att.getBottomKey()));
+				amostra.setMiddle(BigDecimal.valueOf(att.getMiddleKey()));
+				amostra.setTop(BigDecimal.valueOf(att.getTopKey()));
+				amostra.setContent(att.getTextInPage());
+
+			}
+
 			if (pagesToKeep.contains(i)) {
+				amostra.setRemoved(false);
 				continue;
 			}
 
 			if (!lightPages.contains(i)) {
 				pagesToKeep.add(i);
+				amostra.setRemoved(false);
 				continue;
 			}
 
 			pagesToRemove.add(i);
+			amostra.setRemoved(true);
+			amostras.add(amostra);
 
 		}
 
@@ -158,7 +174,6 @@ public class ThumbsApp extends SingleFrameApplication {
 				Integer page = Integer.parseInt(pageAtt);
 				if (!pagesToKeep.contains(page))
 					pagesToKeep.add(page);
-				System.out.println(page + ":" + hashMap.get("Page"));
 
 			}
 
@@ -173,16 +188,7 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		Collections.sort(pagesToRemove);
 
-		int counter = 1;
-
 		for (Integer pageRemoved : pagesToRemove) {
-
-			if (counter++ == 124) {
-
-				System.out.println("adsf");
-				System.out.println("asdf");
-
-			}
 
 			if (pagesToKeep.contains(pageRemoved)) {
 				continue;
@@ -205,7 +211,51 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		reader.close();
 
+		try {
+			createStats();
+		} catch (JAXBException e) {
+		}
+
 		return null;
+	}
+
+	private void createStats() throws JAXBException, FileNotFoundException {
+
+		File currentDir = new File(System.getProperty("user.dir"));
+		String fileName = "stats.xml";
+		File outFile = new File(currentDir, fileName);
+
+		System.out.println(outFile);
+
+		Absoluto authors;
+		String pkgName = Absoluto.class.getPackage().getName();
+		JAXBContext jc = JAXBContext.newInstance(pkgName);
+
+		Unmarshaller u = jc.createUnmarshaller();
+
+		authors = (Absoluto) u.unmarshal(outFile);
+
+		ObjectFactory oFactory = new ObjectFactory();
+
+		authors = oFactory.createAbsoluto();
+
+		List<Amostra> currentAmostras = authors.getAmostra();
+
+		for (Amostra amostra : amostras) {
+
+			currentAmostras.add(amostra);
+
+		}
+
+		Marshaller marshaller;
+
+		marshaller = jc.createMarshaller();
+
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(
+				true));
+
+		marshaller.marshal(authors, new FileOutputStream(outFile));
+
 	}
 
 	private String buildOutputFilename(String suffix) {
@@ -252,14 +302,14 @@ public class ThumbsApp extends SingleFrameApplication {
 	private class RunThumbsTask extends
 			org.jdesktop.application.Task<Object, PageImage> {
 
-		long start = System.currentTimeMillis();
-
 		RunThumbsTask(org.jdesktop.application.Application app)
 				throws IOException {
 
 			super(app);
 
 			lightPages = new ArrayList<Integer>();
+
+			attributes = new ArrayList<PageAttributes>();
 
 			file = selectFile();
 
@@ -324,6 +374,18 @@ public class ThumbsApp extends SingleFrameApplication {
 						Double middleKey = getMiddleKey(0.08f, rop);
 						Double topKey = getTopKey(0.08f, rop);
 						Double bottomKey = getBottomKey(0.08f, rop);
+
+						PdfObject contents = PdfReader.getPdfObject(page
+								.get(PdfName.CONTENTS));
+
+						String textInPage;
+
+						textInPage = PdfTools.getTextFromObject(contents);
+
+						PageAttributes pa = new PageAttributes(pageNumber, key,
+								bottomKey, topKey, middleKey, textInPage);
+
+						attributes.add(pa);
 
 						// System.out.println(pageNumber + ";" + key + ";"
 						// + topKey + ";" + middleKey + ";" + bottomKey);
@@ -494,7 +556,6 @@ public class ThumbsApp extends SingleFrameApplication {
 		@Override
 		protected void finished() {
 			super.finished();
-			System.out.println(System.currentTimeMillis() - start);
 			System.gc();
 		}
 
