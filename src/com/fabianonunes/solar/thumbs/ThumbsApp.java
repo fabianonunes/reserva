@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.media.jai.Histogram;
 import javax.media.jai.Interpolation;
@@ -67,7 +68,7 @@ public class ThumbsApp extends SingleFrameApplication {
 	private ThumbsView view;
 	private boolean runned = false;
 	ArrayList<Integer> lightPages;
-	ArrayList<PageAttributes> attributes;
+	Map<Integer, PageAttributes> attributes;
 	List<Amostra> amostras;
 	private PdfReader reader;
 	File file;
@@ -142,12 +143,14 @@ public class ThumbsApp extends SingleFrameApplication {
 
 			if (pagesToKeep.contains(i)) {
 				amostra.setRemoved(false);
+				amostras.add(amostra);
 				continue;
 			}
 
 			if (!lightPages.contains(i)) {
 				pagesToKeep.add(i);
 				amostra.setRemoved(false);
+				amostras.add(amostra);
 				continue;
 			}
 
@@ -214,6 +217,7 @@ public class ThumbsApp extends SingleFrameApplication {
 		try {
 			createStats();
 		} catch (JAXBException e) {
+			e.printStackTrace();
 		}
 
 		return null;
@@ -231,13 +235,18 @@ public class ThumbsApp extends SingleFrameApplication {
 		String pkgName = Absoluto.class.getPackage().getName();
 		JAXBContext jc = JAXBContext.newInstance(pkgName);
 
-		Unmarshaller u = jc.createUnmarshaller();
+		try {
 
-		authors = (Absoluto) u.unmarshal(outFile);
+			Unmarshaller u = jc.createUnmarshaller();
+			authors = (Absoluto) u.unmarshal(outFile);
 
-		ObjectFactory oFactory = new ObjectFactory();
+		} catch (Exception e) {
 
-		authors = oFactory.createAbsoluto();
+			ObjectFactory oFactory = new ObjectFactory();
+
+			authors = oFactory.createAbsoluto();
+
+		}
 
 		List<Amostra> currentAmostras = authors.getAmostra();
 
@@ -309,7 +318,7 @@ public class ThumbsApp extends SingleFrameApplication {
 
 			lightPages = new ArrayList<Integer>();
 
-			attributes = new ArrayList<PageAttributes>();
+			attributes = new HashMap<Integer, PageAttributes>();
 
 			file = selectFile();
 
@@ -385,7 +394,7 @@ public class ThumbsApp extends SingleFrameApplication {
 						PageAttributes pa = new PageAttributes(pageNumber, key,
 								bottomKey, topKey, middleKey, textInPage);
 
-						attributes.add(pa);
+						attributes.put(pageNumber, pa);
 
 						// System.out.println(pageNumber + ";" + key + ";"
 						// + topKey + ";" + middleKey + ";" + bottomKey);
