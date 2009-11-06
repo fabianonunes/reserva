@@ -24,6 +24,8 @@ import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.CropDescriptor;
+import javax.media.jai.operator.RotateDescriptor;
+import javax.media.jai.operator.ScaleDescriptor;
 import javax.media.jai.operator.SubsampleBinaryToGrayDescriptor;
 import javax.swing.JFileChooser;
 import javax.xml.bind.JAXBContext;
@@ -366,6 +368,9 @@ public class ThumbsApp extends SingleFrameApplication {
 						BufferedImage imageOfPage = PdfImageUtils
 								.extractImageFromPage(page);
 
+						int width = imageOfPage.getWidth();
+						int height = imageOfPage.getHeight();
+
 						RenderedImage rop = imageOfPage;
 
 						Interpolation interpolation = Interpolation
@@ -374,10 +379,33 @@ public class ThumbsApp extends SingleFrameApplication {
 						RenderingHints hints = new RenderingHints(
 								JAI.KEY_INTERPOLATION, interpolation);
 
-						float scale = (float) 350 / imageOfPage.getHeight();
+						float scale = (float) 350
+								/ Math.max(imageOfPage.getHeight(), imageOfPage
+										.getWidth());
 
-						rop = SubsampleBinaryToGrayDescriptor.create(
-								imageOfPage, scale, scale, hints);
+						if (width > height) {
+
+							float factor = 1.2f;
+
+							RenderedOp irop = RotateDescriptor
+									.create(
+											rop,
+											0f,
+											0f,
+											(float) Math.toRadians(90f),
+											Interpolation
+													.getInstance(Interpolation.INTERP_BICUBIC_2),
+											null, null);
+							irop = ScaleDescriptor.create(irop, scale * factor,
+									scale * factor, 0f, 0f, null, null);
+							irop = SubsampleBinaryToGrayDescriptor.create(irop
+									.getAsBufferedImage(), 1 / factor,
+									1 / factor, hints);
+							rop = irop;
+						} else {
+							rop = SubsampleBinaryToGrayDescriptor.create(rop,
+									scale, scale, hints);
+						}
 
 						Double key = getKey(0.10f, rop);
 						Double middleKey = getMiddleKey(0.08f, rop);
@@ -396,12 +424,10 @@ public class ThumbsApp extends SingleFrameApplication {
 
 						attributes.put(pageNumber, pa);
 
-						// System.out.println(pageNumber + ";" + key + ";"
-						// + topKey + ";" + middleKey + ";" + bottomKey);
-
 						Boolean test = false;
 
-						if (topKey <= 8d && key < 15d) {
+						if (topKey <= 8d
+								&& (key < 15d || middleKey < 30d || bottomKey < 30)) {
 							test = true;
 						}
 
@@ -429,6 +455,12 @@ public class ThumbsApp extends SingleFrameApplication {
 
 						}
 
+						if (topKey + middleKey + bottomKey > 90) {
+
+							test = false;
+
+						}
+
 						if (test) {
 
 							PageImage pi = new PageImage();
@@ -441,6 +473,12 @@ public class ThumbsApp extends SingleFrameApplication {
 							publish(pi);
 
 							lightPages.add(pageNumber);
+
+						} else {
+							
+							// System.out.println(pageNumber + ";" + key + ";"
+							// + topKey + ";" + middleKey + ";"
+							// + bottomKey);
 
 						}
 
@@ -477,10 +515,13 @@ public class ThumbsApp extends SingleFrameApplication {
 						margin = margin
 								* Math.min(rop.getWidth(), rop.getHeight());
 
-						RenderedOp croppped = CropDescriptor.create(rop,
-								margin * 2, margin,
-								rop.getWidth() - margin * 4, rop.getHeight()
-										- margin * 2, null);
+						float x = margin * 2;
+						float y = margin;
+						float width = rop.getWidth() - margin * 4;
+						float height = rop.getHeight() - margin * 2;
+
+						RenderedOp croppped = CropDescriptor.create(rop, x, y,
+								width, height, null);
 
 						Histogram histogram = (Histogram) JAI.create(
 								"histogram", croppped).getProperty("histogram");
