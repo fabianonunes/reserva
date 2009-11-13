@@ -455,11 +455,18 @@ public class ThumbsApp extends SingleFrameApplication {
 
 						}
 
-						if (topKey + middleKey + bottomKey > 90) {
+						if (topKey + middleKey + bottomKey > 95) {
 
 							test = false;
 
+						} else {
+
+							test = true;
+
 						}
+
+						System.out.println(pageNumber + ";" + key + ";"
+								+ topKey + ";" + middleKey + ";" + bottomKey);
 
 						if (test) {
 
@@ -475,10 +482,6 @@ public class ThumbsApp extends SingleFrameApplication {
 							lightPages.add(pageNumber);
 
 						} else {
-							
-							// System.out.println(pageNumber + ";" + key + ";"
-							// + topKey + ";" + middleKey + ";"
-							// + bottomKey);
 
 						}
 
