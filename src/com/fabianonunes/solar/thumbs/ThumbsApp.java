@@ -459,10 +459,6 @@ public class ThumbsApp extends SingleFrameApplication {
 
 							test = false;
 
-						} else {
-
-							test = true;
-
 						}
 
 						System.out.println(pageNumber + ";" + key + ";"
