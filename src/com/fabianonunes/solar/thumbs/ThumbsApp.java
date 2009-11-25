@@ -41,11 +41,11 @@ import org.jdesktop.application.Task;
 import org.jdesktop.application.Task.BlockingScope;
 
 import br.jus.tst.sesdi2.file.selector.gui.FileSelectorDialog;
-import br.jus.tst.sesdi2.pdf.PageProcessor;
-import br.jus.tst.sesdi2.pdf.PdfImageUtils;
-import br.jus.tst.sesdi2.pdf.PdfPageIterator;
-import br.jus.tst.sesdi2.pdf.cleaner.tools.PdfTools;
 
+import com.fabianonunes.cleaner.pdf.PageProcessor;
+import com.fabianonunes.cleaner.pdf.PdfImageUtils;
+import com.fabianonunes.cleaner.pdf.PdfPageIterator;
+import com.fabianonunes.cleaner.pdf.cleaner.tools.PdfTools;
 import com.fabianonunes.solar.thumbs.amostra.Absoluto;
 import com.fabianonunes.solar.thumbs.amostra.Amostra;
 import com.fabianonunes.solar.thumbs.amostra.ObjectFactory;
