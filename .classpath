@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Commons Collections"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Commons IO"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Commons Lang"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Commons Logging"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/iText"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jai 1.1.4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jai-io"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JPedal LGPL"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Swing Application Framework"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/swing-worker 1.1"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JXLayer"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SwingX 1.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Cleaner"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/FileSelector"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" output="target/classes" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
