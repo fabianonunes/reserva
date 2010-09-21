@@ -461,9 +461,6 @@ public class ThumbsApp extends SingleFrameApplication {
 
 						}
 
-						System.out.println(pageNumber + ";" + key + ";"
-								+ topKey + ";" + middleKey + ";" + bottomKey);
-
 						if (test) {
 
 							PageImage pi = new PageImage();

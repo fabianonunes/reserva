@@ -28,7 +28,7 @@ import javax.swing.event.ListDataListener;
  * 
  * @author John O'Conner
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class SortedListModel extends AbstractListModel {
 
 	private static final long serialVersionUID = 1L;
@@ -48,9 +48,9 @@ public class SortedListModel extends AbstractListModel {
 	 * Create a SortedListModel from an existing model using a specific
 	 * comparator and sort order. Use a default text comparator.
 	 * 
-	 *@param model
+	 * @param model
 	 *            the unsorted list model
-	 *@param sortOrder
+	 * @param sortOrder
 	 *            that should be used
 	 */
 	public SortedListModel(ListModel model, SortOrder sortOrder) {
@@ -61,9 +61,9 @@ public class SortedListModel extends AbstractListModel {
 	 * Create a SortedListModel from an existing model. Sort the model in the
 	 * specified sort order using the given comparator.
 	 * 
-	 *@param model
-	 *@param sortOrder
-	 *@param comp
+	 * @param model
+	 * @param sortOrder
+	 * @param comp
 	 * 
 	 */
 	public SortedListModel(ListModel model, SortOrder sortOrder, Comparator comp) {
@@ -125,9 +125,9 @@ public class SortedListModel extends AbstractListModel {
 	/**
 	 * Convert sorted model index to an unsorted model index.
 	 * 
-	 *@param index
+	 * @param index
 	 *            an index in the sorted model
-	 *@return modelIndex an index in the unsorted model
+	 * @return modelIndex an index in the unsorted model
 	 * 
 	 */
 	public int toUnsortedModelIndex(int index) throws IndexOutOfBoundsException {
@@ -142,10 +142,10 @@ public class SortedListModel extends AbstractListModel {
 	 * Convert an array of sorted model indices to their unsorted model indices.
 	 * Sort the resulting set of indices.
 	 * 
-	 *@param sortedSelectedIndices
+	 * @param sortedSelectedIndices
 	 *            indices of selected elements in the sorted model or sorted
 	 *            view
-	 *@return unsortedSelectedIndices selected indices in the unsorted model
+	 * @return unsortedSelectedIndices selected indices in the unsorted model
 	 */
 	public int[] toUnsortedModelIndices(int[] sortedSelectedIndices) {
 		int[] unsortedSelectedIndices = new int[sortedSelectedIndices.length];
@@ -213,8 +213,8 @@ public class SortedListModel extends AbstractListModel {
 			comparator = comp;
 			Collections.sort(sortedModel);
 		}
-		fireContentsChanged(ListDataEvent.CONTENTS_CHANGED, 0, sortedModel
-				.size() - 1);
+		fireContentsChanged(ListDataEvent.CONTENTS_CHANGED, 0,
+				sortedModel.size() - 1);
 	}
 
 	/**
@@ -230,8 +230,8 @@ public class SortedListModel extends AbstractListModel {
 			} else {
 				Collections.sort(sortedModel);
 			}
-			fireContentsChanged(ListDataEvent.CONTENTS_CHANGED, 0, sortedModel
-					.size() - 1);
+			fireContentsChanged(ListDataEvent.CONTENTS_CHANGED, 0,
+					sortedModel.size() - 1);
 		}
 	}
 
@@ -264,8 +264,7 @@ public class SortedListModel extends AbstractListModel {
 			SortedListEntry newEntry = new SortedListEntry(x);
 			int insertionPoint = findInsertionPoint(newEntry);
 			sortedModel.add(insertionPoint, newEntry);
-			fireIntervalAdded(e.getSource(), insertionPoint,
-					insertionPoint);
+			fireIntervalAdded(e.getSource(), insertionPoint, insertionPoint);
 		}
 	}
 
@@ -312,8 +311,8 @@ public class SortedListModel extends AbstractListModel {
 	 */
 	private void unsortedContentsChanged(ListDataEvent e) {
 		Collections.sort(sortedModel);
-		fireContentsChanged(ListDataEvent.CONTENTS_CHANGED, 0, sortedModel
-				.size() - 1);
+		fireContentsChanged(ListDataEvent.CONTENTS_CHANGED, 0,
+				sortedModel.size() - 1);
 	}
 
 	/**
