@@ -221,6 +221,8 @@ public class ThumbsApp extends SingleFrameApplication {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
+		
+		exit();
 
 		return null;
 	}
