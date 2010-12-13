@@ -106,8 +106,9 @@ public class ThumbsApp extends SingleFrameApplication {
 		if (!runned) {
 			file = null;
 			runned = true;
-			return new RunThumbsTask(org.jdesktop.application.Application
-					.getInstance(com.fabianonunes.solar.thumbs.ThumbsApp.class));
+			return new RunThumbsTask(
+					org.jdesktop.application.Application
+							.getInstance(com.fabianonunes.solar.thumbs.ThumbsApp.class));
 		}
 
 		amostras = new ArrayList<Amostra>();
@@ -221,7 +222,7 @@ public class ThumbsApp extends SingleFrameApplication {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
-		
+
 		exit();
 
 		return null;
@@ -382,16 +383,15 @@ public class ThumbsApp extends SingleFrameApplication {
 								JAI.KEY_INTERPOLATION, interpolation);
 
 						float scale = (float) 350
-								/ Math.max(imageOfPage.getHeight(), imageOfPage
-										.getWidth());
+								/ Math.max(imageOfPage.getHeight(),
+										imageOfPage.getWidth());
 
 						if (width > height) {
 
 							float factor = 1.2f;
 
 							RenderedOp irop = RotateDescriptor
-									.create(
-											rop,
+									.create(rop,
 											0f,
 											0f,
 											(float) Math.toRadians(90f),
@@ -400,8 +400,8 @@ public class ThumbsApp extends SingleFrameApplication {
 											null, null);
 							irop = ScaleDescriptor.create(irop, scale * factor,
 									scale * factor, 0f, 0f, null, null);
-							irop = SubsampleBinaryToGrayDescriptor.create(irop
-									.getAsBufferedImage(), 1 / factor,
+							irop = SubsampleBinaryToGrayDescriptor.create(
+									irop.getAsBufferedImage(), 1 / factor,
 									1 / factor, hints);
 							rop = irop;
 						} else {
@@ -466,9 +466,7 @@ public class ThumbsApp extends SingleFrameApplication {
 						if (test) {
 
 							PageImage pi = new PageImage();
-							pi
-									.setImage(((RenderedOp) rop)
-											.getAsBufferedImage());
+							pi.setImage(((RenderedOp) rop).getAsBufferedImage());
 							pi.setPageNumber(pageNumber);
 							pi.setStandardDeviation(key);
 
