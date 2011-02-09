@@ -51,16 +51,16 @@ import com.fabianonunes.solar.thumbs.amostra.Amostra;
 import com.fabianonunes.solar.thumbs.amostra.ObjectFactory;
 import com.fabianonunes.solar.thumbs.model.PageAttributes;
 import com.fabianonunes.solar.thumbs.model.PageImage;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfCopy;
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfObject;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.SimpleBookmark;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfDictionary;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfObject;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.SimpleBookmark;
 
 /**
  * The main class of the application.
@@ -98,7 +98,6 @@ public class ThumbsApp extends SingleFrameApplication {
 		return this.view;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Action(block = BlockingScope.WINDOW)
 	public Task<Object, PageImage> runThumbs() throws IOException,
 			DocumentException {
@@ -119,9 +118,6 @@ public class ThumbsApp extends SingleFrameApplication {
 		for (String name : pagesToKeepInString) {
 			pagesToKeep.add(Integer.parseInt(name));
 		}
-
-		PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(
-				buildOutputFilename("[L]")));
 
 		int numberOfPages = reader.getNumberOfPages();
 
@@ -163,14 +159,14 @@ public class ThumbsApp extends SingleFrameApplication {
 
 		}
 
-		List<HashMap<String, String>> bookmarks = SimpleBookmark
+		List<HashMap<String, Object>> bookmarks = SimpleBookmark
 				.getBookmark(reader);
 
 		if (bookmarks != null) {
 
-			for (HashMap<String, String> hashMap : bookmarks) {
+			for (HashMap<String, Object> hashMap : bookmarks) {
 
-				String pageAtt = hashMap.get("Page");
+				String pageAtt = (String) hashMap.get("Page");
 				if (pageAtt == null) {
 					continue;
 				}
@@ -210,8 +206,11 @@ public class ThumbsApp extends SingleFrameApplication {
 		document.close();
 
 		Collections.sort(pagesToKeep);
-
-		stamp.getReader().selectPages(pagesToKeep);
+		
+		reader.selectPages(pagesToKeep);
+		
+		PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(
+				buildOutputFilename("[L]")));
 
 		stamp.close();
 

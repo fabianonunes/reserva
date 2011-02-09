@@ -11,10 +11,21 @@
 			<url>http://mvn.fabianonunes.com/</url>
 		</repository>
 		<repository>
+			<id>itextpdf.com</id>
+			<name>Maven Repository for iText</name>
+			<url>http://maven.itextpdf.com/</url>
+		</repository>
+		<repository>
 			<id>jboss</id>
 			<url>http://repository.jboss.org/maven2/</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Jarvana</id>
+			<url>http://repo1.maven.org/maven2/org/bluestemsoftware/open/maven</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -26,6 +37,69 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-5</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>com.fabianonunes.solar.thumbs.ThumbsApp</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>assembly</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.bluestemsoftware.open.maven.plugin</groupId>
+				<artifactId>launch4j-plugin</artifactId>
+				<version>1.5.0.0</version>
+				<executions>
+					<execution>
+						<id>launch4j</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<dontWrapJar>false</dontWrapJar>
+							<headerType>gui</headerType>
+							<errTitle></errTitle>
+							<cmdLine></cmdLine>
+							<chdir></chdir>
+							<priority>normal</priority>
+							<downloadUrl>http://java.com/download</downloadUrl>
+							<supportUrl></supportUrl>
+							<customProcName>false</customProcName>
+							<stayAlive>false</stayAlive>
+							<manifest></manifest>
+							<icon></icon>
+							<jre>
+								<path>D:\Solar\j6</path>
+								<minVersion>1.6.0</minVersion>
+								<maxVersion></maxVersion>
+								<maxHeapSize>512</maxHeapSize>
+							</jre>
+							<outfile>target/${project.artifactId}-${project.version}.exe</outfile>
+							<jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
