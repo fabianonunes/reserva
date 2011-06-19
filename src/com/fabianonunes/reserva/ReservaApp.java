@@ -35,15 +35,6 @@ public class ReservaApp {
 
 	}
 
-	public static void main(String[] args) throws IOException,
-			DocumentException {
-
-		ReservaApp r = new ReservaApp(new File(args[0]));
-
-		r.run();
-
-	}
-
 	public void run() throws IOException, DocumentException {
 
 		reservePages = analyzePages();
@@ -74,7 +65,8 @@ public class ReservaApp {
 				continue;
 			}
 
-			OutputStream outputStream = getOutputStream(pageReserved.toString());
+			OutputStream outputStream = getOutputStream(File.separator
+					+ pageReserved.toString());
 
 			Document document = new Document();
 
@@ -130,7 +122,7 @@ public class ReservaApp {
 
 		String extension = FilenameUtils.getExtension(fileName);
 
-		output = join(inputFile.getParent(), name, suffix + "." + extension);
+		output = join(inputFile.getParent(), name + suffix + "." + extension);
 
 		FileUtils.forceMkdir(output.getParentFile());
 
@@ -138,8 +130,8 @@ public class ReservaApp {
 
 	}
 
-	private File join(String ... paths) {
-
+	private File join(String... paths) {
+		
 		return new File(StringUtils.join(paths, File.separator));
 
 	}

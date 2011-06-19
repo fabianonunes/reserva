@@ -14,10 +14,6 @@ import com.itextpdf.text.pdf.PdfStamper;
 
 public class Merger {
 
-	public Merger() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public void join(File outputFile) throws IOException, DocumentException {
 
 		outputFile = new File("/home/fabiano/L.pdf");
