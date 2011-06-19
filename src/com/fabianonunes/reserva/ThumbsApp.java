@@ -1,7 +1,7 @@
 /*
  * ThumbsApp.java
  */
-package com.fabianonunes.solar.thumbs;
+package com.fabianonunes.reserva;
 
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -25,20 +25,32 @@ import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.RotateDescriptor;
 import javax.media.jai.operator.ScaleDescriptor;
 import javax.media.jai.operator.SubsampleBinaryToGrayDescriptor;
+import javax.naming.spi.ObjectFactory;
 import javax.swing.JFileChooser;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.ws.Action;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.fabianonunes.cleaner.pdf.PageProcessor;
-import com.fabianonunes.cleaner.pdf.PdfImageUtils;
-import com.fabianonunes.cleaner.pdf.PdfPageIterator;
-import com.fabianonunes.cleaner.pdf.cleaner.tools.PdfTools;
-import com.fabianonunes.solar.thumbs.model.PageAttributes;
-import com.fabianonunes.solar.thumbs.model.PageImage;
+import com.fabianonunes.reserva.model.PageAttributes;
+import com.fabianonunes.reserva.model.PageImage;
+import com.fabianonunes.reserva.pdf.PageProcessor;
+import com.fabianonunes.reserva.pdf.PdfImageUtils;
+import com.fabianonunes.reserva.pdf.PdfPageIterator;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfDictionary;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfObject;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.SimpleBookmark;
+import com.sun.jmx.snmp.tasks.Task;
 
 /**
  * The main class of the application.

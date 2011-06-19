@@ -1,4 +1,4 @@
-package com.fabianonunes.solar.thumbs.model;
+package com.fabianonunes.reserva.model;
 
 public class PageAttributes {
 
