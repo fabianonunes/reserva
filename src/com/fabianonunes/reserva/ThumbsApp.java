@@ -3,8 +3,6 @@
  */
 package com.fabianonunes.solar.thumbs;
 
-import ilist.ui.generic.grid.JCell;
-
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -34,33 +32,13 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
-import org.jdesktop.application.Action;
-import org.jdesktop.application.Application;
-import org.jdesktop.application.SingleFrameApplication;
-import org.jdesktop.application.Task;
-import org.jdesktop.application.Task.BlockingScope;
-
-import br.jus.tst.sesdi2.file.selector.gui.FileSelectorDialog;
 
 import com.fabianonunes.cleaner.pdf.PageProcessor;
 import com.fabianonunes.cleaner.pdf.PdfImageUtils;
 import com.fabianonunes.cleaner.pdf.PdfPageIterator;
 import com.fabianonunes.cleaner.pdf.cleaner.tools.PdfTools;
-import com.fabianonunes.solar.thumbs.amostra.Absoluto;
-import com.fabianonunes.solar.thumbs.amostra.Amostra;
-import com.fabianonunes.solar.thumbs.amostra.ObjectFactory;
 import com.fabianonunes.solar.thumbs.model.PageAttributes;
 import com.fabianonunes.solar.thumbs.model.PageImage;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfCopy;
-import com.itextpdf.text.pdf.PdfDictionary;
-import com.itextpdf.text.pdf.PdfImportedPage;
-import com.itextpdf.text.pdf.PdfName;
-import com.itextpdf.text.pdf.PdfObject;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import com.itextpdf.text.pdf.SimpleBookmark;
 
 /**
  * The main class of the application.
