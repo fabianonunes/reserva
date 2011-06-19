@@ -1,6 +1,5 @@
 package com.fabianonunes.reserva.pdf;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -110,10 +109,8 @@ public class PdfPageIterator<T> {
 				}
 
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
