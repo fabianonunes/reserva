@@ -1,16 +1,11 @@
 package com.fabianonunes.reserva;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 
 import com.fabianonunes.reserva.pdf.PdfPageIterator;
 import com.fabianonunes.reserva.pdf.processor.EmptiesFilter;
@@ -21,13 +16,12 @@ import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 
-public class ReservaApp {
+public class Store extends FileOutputter {
 
 	private Collection<Integer> reservePages;
 	private PdfReader reader;
-	private File inputFile;
 
-	public ReservaApp(File file) throws IOException {
+	public Store(File file) throws IOException {
 
 		this.inputFile = file;
 
@@ -35,7 +29,7 @@ public class ReservaApp {
 
 	}
 
-	public void run() throws IOException, DocumentException {
+	public void split() throws IOException, DocumentException {
 
 		reservePages = analyzePages();
 
@@ -109,30 +103,6 @@ public class ReservaApp {
 		PdfPageIterator<Integer> iterator = new PdfPageIterator<Integer>(reader);
 
 		return iterator.iterate(new EmptiesFilter());
-
-	}
-
-	private OutputStream getOutputStream(String suffix) throws IOException {
-
-		File output = null;
-
-		String fileName = inputFile.getAbsolutePath();
-
-		String name = FilenameUtils.getBaseName(fileName);
-
-		String extension = FilenameUtils.getExtension(fileName);
-
-		output = join(inputFile.getParent(), name + suffix + "." + extension);
-
-		FileUtils.forceMkdir(output.getParentFile());
-
-		return new FileOutputStream(output);
-
-	}
-
-	private File join(String... paths) {
-		
-		return new File(StringUtils.join(paths, File.separator));
 
 	}
 

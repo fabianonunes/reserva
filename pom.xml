@@ -49,7 +49,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.fabianonunes.solar.thumbs.ThumbsApp</mainClass>
+							<mainClass>com.fabianonunes.reserva.App</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -62,42 +62,6 @@
 						</goals>
 						<inherited>false</inherited>
 						<configuration>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.bluestemsoftware.open.maven.plugin</groupId>
-				<artifactId>launch4j-plugin</artifactId>
-				<version>1.5.0.0</version>
-				<executions>
-					<execution>
-						<id>launch4j</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>launch4j</goal>
-						</goals>
-						<configuration>
-							<dontWrapJar>false</dontWrapJar>
-							<headerType>gui</headerType>
-							<errTitle></errTitle>
-							<cmdLine></cmdLine>
-							<chdir></chdir>
-							<priority>normal</priority>
-							<downloadUrl>http://java.com/download</downloadUrl>
-							<supportUrl></supportUrl>
-							<customProcName>false</customProcName>
-							<stayAlive>false</stayAlive>
-							<manifest></manifest>
-							<icon></icon>
-							<jre>
-								<path>D:\Solar\j6</path>
-								<minVersion>1.6.0</minVersion>
-								<maxVersion></maxVersion>
-								<maxHeapSize>512</maxHeapSize>
-							</jre>
-							<outfile>target/${project.artifactId}-${project.version}.exe</outfile>
-							<jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
 						</configuration>
 					</execution>
 				</executions>
