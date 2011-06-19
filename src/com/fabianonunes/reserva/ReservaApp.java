@@ -1,18 +1,16 @@
-/*
- * ThumbsApp.java
- */
 package com.fabianonunes.reserva;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.fabianonunes.reserva.pdf.PdfPageIterator;
 import com.fabianonunes.reserva.pdf.processor.EmptiesFilter;
@@ -25,16 +23,20 @@ import com.itextpdf.text.pdf.PdfStamper;
 
 public class ReservaApp {
 
-	Collection<Integer> lightPages;
+	private Collection<Integer> reservePages;
 	private PdfReader reader;
-	File file;
+	private File inputFile;
 
-	public ReservaApp(File file) {
-		this.file = file;
+	public ReservaApp(File file) throws IOException {
+
+		this.inputFile = file;
+
+		reader = new PdfReader(inputFile.getAbsolutePath());
+
 	}
 
-	public static void main(String[] args) throws FileNotFoundException,
-			DocumentException, IOException {
+	public static void main(String[] args) throws IOException,
+			DocumentException {
 
 		ReservaApp r = new ReservaApp(new File(args[0]));
 
@@ -42,22 +44,21 @@ public class ReservaApp {
 
 	}
 
-	public void run() throws FileNotFoundException, DocumentException,
-			IOException {
+	public void run() throws IOException, DocumentException {
 
-		lightPages = analyzePages();
+		reservePages = analyzePages();
 
-		ArrayList<Integer> pagesToKeep = new ArrayList<Integer>();
+		TreeSet<Integer> pagesToKeep = new TreeSet<Integer>();
 
-		ArrayList<Integer> pagesToRemove = new ArrayList<Integer>();
+		TreeSet<Integer> pagesToReserve = new TreeSet<Integer>();
 
 		int numberOfPages = reader.getNumberOfPages();
 
 		for (int i = 1; i <= numberOfPages; i++) {
 
-			if (lightPages.contains(i)) {
+			if (reservePages.contains(i)) {
 
-				pagesToRemove.add(i);
+				pagesToReserve.add(i);
 
 			} else {
 
@@ -67,22 +68,21 @@ public class ReservaApp {
 
 		}
 
-		Collections.sort(pagesToRemove);
+		for (Integer pageReserved : pagesToReserve) {
 
-		for (Integer pageRemoved : pagesToRemove) {
-
-			Document document = new Document();
-
-			PdfCopy copy = new PdfCopy(document, new FileOutputStream(
-					buildOutputFilename("[" + pageRemoved + "]")));
-
-			document.open();
-
-			if (pagesToKeep.contains(pageRemoved)) {
+			if (pagesToKeep.contains(pageReserved)) {
 				continue;
 			}
 
-			PdfImportedPage p = copy.getImportedPage(reader, pageRemoved);
+			OutputStream outputStream = getOutputStream(pageReserved.toString());
+
+			Document document = new Document();
+
+			PdfCopy copy = new PdfCopy(document, outputStream);
+
+			document.open();
+
+			PdfImportedPage p = copy.getImportedPage(reader, pageReserved);
 
 			try {
 
@@ -100,12 +100,11 @@ public class ReservaApp {
 
 		}
 
-		Collections.sort(pagesToKeep);
+		reader.selectPages(new ArrayList<Integer>(pagesToKeep));
 
-		reader.selectPages(pagesToKeep);
+		OutputStream outputStream = getOutputStream("[L]");
 
-		PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(
-				buildOutputFilename("[L]")));
+		PdfStamper stamp = new PdfStamper(reader, outputStream);
 
 		stamp.close();
 
@@ -113,13 +112,7 @@ public class ReservaApp {
 
 	}
 
-	protected Collection<Integer> analyzePages() throws IOException {
-
-		if (file == null) {
-			return null;
-		}
-
-		reader = new PdfReader(file.getAbsolutePath());
+	protected Collection<Integer> analyzePages() {
 
 		PdfPageIterator<Integer> iterator = new PdfPageIterator<Integer>(reader);
 
@@ -127,27 +120,27 @@ public class ReservaApp {
 
 	}
 
-	private File buildOutputFilename(String suffix) throws IOException {
+	private OutputStream getOutputStream(String suffix) throws IOException {
 
 		File output = null;
 
-		if (file != null) {
+		String fileName = inputFile.getAbsolutePath();
 
-			String name = FilenameUtils.getBaseName(file.getAbsolutePath());
+		String name = FilenameUtils.getBaseName(fileName);
 
-			String extension = FilenameUtils.getExtension(file
-					.getAbsolutePath());
+		String extension = FilenameUtils.getExtension(fileName);
 
-			String out = file.getParent() + File.separator + name
-					+ File.separator + suffix + "." + extension;
+		output = join(inputFile.getParent(), name, suffix + "." + extension);
 
-			output = new File(out);
+		FileUtils.forceMkdir(output.getParentFile());
 
-			FileUtils.forceMkdir(output.getParentFile());
+		return new FileOutputStream(output);
 
-		}
+	}
 
-		return output;
+	private File join(String ... paths) {
+
+		return new File(StringUtils.join(paths, File.separator));
 
 	}
 

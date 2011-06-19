@@ -1,4 +1,4 @@
-package com.fabianonunes.reserva.pdf;
+package com.fabianonunes.reserva.pdf.processor;
 
 
 import java.util.Formatter;
@@ -6,15 +6,13 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fabianonunes.reserva.pdf.PdfPageIterator;
+
 public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 
 	private Boolean stop = false;
 
-	protected PdfPageIterator<T> pdfIterator;
-
-	public CLIPageProcessor(PdfPageIterator<T> pdfIterator) {
-		this.pdfIterator = pdfIterator;
-	}
+	protected PdfPageIterator<T> iterator;
 
 	@Override
 	public Boolean isStopped() {
@@ -51,10 +49,15 @@ public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 		sb.append(empty);
 		sb.append("] ");
 
-		formater.format("%04d", pdfIterator.getCurrentPage());
+		formater.format("%04d", iterator.getCurrentPage());
 
-		printAndReturn(sb.toString() + "/" + pdfIterator.getTotalOfPages());
+		printAndReturn(sb.toString() + "/" + iterator.getTotalOfPages());
 
+	}
+	
+	@Override
+	public void setIterator(PdfPageIterator<T> iterator) {
+		this.iterator = iterator;
 	}
 
 }
