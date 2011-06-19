@@ -15,7 +15,7 @@ import javax.media.jai.operator.SubsampleBinaryToGrayDescriptor;
 @SuppressWarnings("restriction")
 public class ImageKeys {
 
-	RenderedImage rop;
+	public RenderedImage rop;
 
 	public ImageKeys(RenderedImage rop) {
 
@@ -120,7 +120,7 @@ public class ImageKeys {
 		RenderingHints hints = new RenderingHints(JAI.KEY_INTERPOLATION,
 				interpolation);
 
-		float scale = (float) 350
+		float scale = (float) 800
 				/ Math.max(imageOfPage.getHeight(), imageOfPage.getWidth());
 
 		RenderedOp irop = null;
