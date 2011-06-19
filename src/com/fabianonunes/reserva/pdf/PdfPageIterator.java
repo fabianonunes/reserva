@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import com.fabianonunes.reserva.pdf.processor.PageProcessor;
 import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.PdfReader;
 
@@ -50,6 +51,8 @@ public class PdfPageIterator<T> {
 	 * @author Fabiano Nunes
 	 */
 	public Collection<T> iterate(final PageProcessor<T> processor) {
+		
+		processor.setIterator(this);
 
 		Vector<T> retVal = new Vector<T>();
 

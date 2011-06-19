@@ -5,10 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.fabianonunes.cleaner.decoder.DecoderException;
-import com.fabianonunes.cleaner.decoder.FaxDecoder;
-import com.fabianonunes.cleaner.decoder.FlateDecoder;
-import com.fabianonunes.cleaner.decoder.JBIG2DecoderC;
+import com.fabianonunes.reserva.decoder.DecoderException;
+import com.fabianonunes.reserva.decoder.FaxDecoder;
+import com.fabianonunes.reserva.decoder.FlateDecoder;
+import com.fabianonunes.reserva.decoder.JBIG2DecoderC;
 import com.itextpdf.text.pdf.PRStream;
 import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.PdfName;

@@ -1,4 +1,4 @@
-package com.fabianonunes.cleaner.decoder;
+package com.fabianonunes.reserva.decoder;
 
 public class DecoderException extends Exception {
 

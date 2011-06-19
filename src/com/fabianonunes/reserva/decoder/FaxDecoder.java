@@ -1,4 +1,4 @@
-package com.fabianonunes.cleaner.decoder;
+package com.fabianonunes.reserva.decoder;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;

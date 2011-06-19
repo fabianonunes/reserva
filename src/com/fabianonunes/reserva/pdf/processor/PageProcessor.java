@@ -1,6 +1,6 @@
-package com.fabianonunes.reserva.pdf;
+package com.fabianonunes.reserva.pdf.processor;
 
-
+import com.fabianonunes.reserva.pdf.PdfPageIterator;
 import com.itextpdf.text.pdf.PdfDictionary;
 
 /**
@@ -45,5 +45,12 @@ public interface PageProcessor<T> {
 	 *            the progress from 0 to 100
 	 */
 	public void setProgress(Float progress);
+
+	/**
+	 * Sets a iterator as a property of this processor
+	 * 
+	 * @param iterator
+	 */
+	public void setIterator(PdfPageIterator<T> iterator);
 
 }

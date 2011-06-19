@@ -1,4 +1,4 @@
-package com.fabianonunes.reserva;
+package com.fabianonunes.reserva.image;
 
 import java.awt.RenderingHints;
 import java.awt.image.RenderedImage;

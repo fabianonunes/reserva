@@ -14,11 +14,7 @@ import com.itextpdf.text.pdf.PdfStamper;
 
 public class Merger {
 
-	public Merger() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public void untitled(File outputFile) throws IOException, DocumentException {
+	public void join(File outputFile) throws IOException, DocumentException {
 
 		outputFile = new File("/home/fabiano/L.pdf");
 
@@ -55,28 +51,13 @@ public class Merger {
 
 			PdfImportedPage page = stamper.getImportedPage(pageReader, 1);
 
-			// int place = pageNumber - counter++;
+			stamper.insertPage(pageNumber, pageReader.getPageSize(1));
 
-			int place = pageNumber;
-
-			System.out.println(place);
-
-			stamper.insertPage(place, pageReader.getPageSize(1));
-
-			stamper.getUnderContent(place).addTemplate(page, 0, 0);
+			stamper.getUnderContent(pageNumber).addTemplate(page, 0, 0);
 
 		}
 
 		stamper.close();
-
-		// stamper.getImportedPage(reader, 1);
-		//
-		// Document document = new Document();
-		//
-		// PdfCopy copy = new PdfCopy(document, new
-		// FileOutputStream(outputFile));
-		//
-		// copy.addPage(p);
 
 	}
 }

@@ -22,7 +22,7 @@ public class MergerTest {
 	@Test
 	public void testMerging() throws IOException, DocumentException {
 
-		mg.untitled(new File(""));
+		mg.join(new File(""));
 
 	}
 

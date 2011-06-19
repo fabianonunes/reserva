@@ -2,19 +2,18 @@ package com.fabianonunes.reserva.pdf.processor;
 
 import java.awt.image.BufferedImage;
 
-import com.fabianonunes.reserva.ImageKeys;
-import com.fabianonunes.reserva.pdf.PageProcessor;
+import com.fabianonunes.reserva.image.ImageKeys;
 import com.fabianonunes.reserva.pdf.PdfImageUtils;
 import com.itextpdf.text.pdf.PdfDictionary;
 
-public class EmptiesFilter implements PageProcessor<Integer> {
+public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
 	private int counter = 0;
 
 	@Override
 	public Integer process(PdfDictionary page, Integer pageNumber)
 			throws Throwable {
-
+		
 		counter++;
 
 		BufferedImage imageOfPage = PdfImageUtils.extractImageFromPage(page);
@@ -76,21 +75,5 @@ public class EmptiesFilter implements PageProcessor<Integer> {
 
 	}
 
-	@Override
-	public void stop() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Boolean isStopped() {
-		return false;
-	}
-
-	@Override
-	public void setProgress(Float progress) {
-		// TODO Auto-generated method stub
-
-	}
 
 }
