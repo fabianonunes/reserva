@@ -8,14 +8,10 @@ import com.itextpdf.text.pdf.PdfDictionary;
 
 public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
-	private int counter = 0;
-
 	@Override
 	public Integer process(PdfDictionary page, Integer pageNumber)
 			throws Throwable {
 		
-		counter++;
-
 		BufferedImage imageOfPage = PdfImageUtils.extractImageFromPage(page);
 
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);

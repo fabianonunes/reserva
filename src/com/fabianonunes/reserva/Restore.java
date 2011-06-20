@@ -15,6 +15,9 @@ import com.itextpdf.text.pdf.PdfStamper;
 public class Restore extends FileOutputter {
 
 	private File reservedDir;
+	private PdfReader reader;
+	private OutputStream os;
+	private PdfStamper stamper;
 
 	public Restore(File inputFile, File reservedDir) throws IOException {
 
@@ -26,21 +29,37 @@ public class Restore extends FileOutputter {
 
 	public void join() throws IOException, DocumentException {
 
-		PdfReader reader = new PdfReader(inputFile.getAbsolutePath());
-
-		OutputStream os = getOutputStream("[R]");
-
-		PdfStamper stamper = new PdfStamper(reader, os);
-
-		File[] files = reservedDir.listFiles();
-
-		if (files.length == 0) {
-
+		if (!reservedDir.exists()) {
 			return;
+		}
+
+		initialize();
+		
+		TreeMap<Integer, File> map = getFileSet();
+
+		for (Integer pageNumber : map.keySet()) {
+
+			File file = map.get(pageNumber);
+
+			PdfReader pageReader = new PdfReader(file.getAbsolutePath());
+
+			PdfImportedPage page = stamper.getImportedPage(pageReader, 1);
+
+			stamper.insertPage(pageNumber, pageReader.getPageSize(1));
+
+			stamper.getOverContent(pageNumber).addTemplate(page, 0, 0);
 
 		}
 
+		stamper.close();
+
+	}
+
+	private TreeMap<Integer, File> getFileSet() {
+
 		TreeMap<Integer, File> map = new TreeMap<Integer, File>();
+
+		File[] files = reservedDir.listFiles();
 
 		for (File file : files) {
 
@@ -56,21 +75,15 @@ public class Restore extends FileOutputter {
 
 		}
 
-		for (Integer pageNumber : map.keySet()) {
+		return map;
 
-			File file = map.get(pageNumber);
+	}
 
-			PdfReader pageReader = new PdfReader(file.getAbsolutePath());
+	private void initialize() throws IOException, DocumentException {
 
-			PdfImportedPage page = stamper.getImportedPage(pageReader, 1);
-
-			stamper.insertPage(pageNumber, pageReader.getPageSize(1));
-
-			stamper.getUnderContent(pageNumber).addTemplate(page, 0, 0);
-
-		}
-
-		stamper.close();
+		reader = new PdfReader(inputFile.getAbsolutePath());
+		os = getOutputStream("[R]");
+		stamper = new PdfStamper(reader, os);
 
 	}
 
