@@ -9,12 +9,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class FileOutputter {
-	
+
 	File inputFile;
 
-	protected OutputStream getOutputStream(String suffix) throws IOException {
+	File outputFile;
 
-		File output = null;
+	protected OutputStream getOutputStream(String suffix) throws IOException {
 
 		String fileName = inputFile.getAbsolutePath();
 
@@ -24,17 +24,24 @@ public abstract class FileOutputter {
 
 		String extension = FilenameUtils.getExtension(fileName);
 
-		output = join(parent.getAbsolutePath(), name + suffix + "." + extension);
+		outputFile = join(parent.getAbsolutePath(), name + suffix + "."
+				+ extension);
 
-		output.getParentFile().mkdirs();
+		outputFile.getParentFile().mkdirs();
 
-		return new FileOutputStream(output);
+		return new FileOutputStream(outputFile);
 
 	}
 
 	private File join(String... paths) {
 
 		return new File(StringUtils.join(paths, File.separator));
+
+	}
+
+	public File getOutputFile() {
+
+		return outputFile;
 
 	}
 

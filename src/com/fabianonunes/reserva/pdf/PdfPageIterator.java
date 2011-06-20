@@ -124,6 +124,8 @@ public class PdfPageIterator<T> {
 		}
 
 		executor.shutdown();
+		
+		System.out.println("");
 
 		return retVal;
 

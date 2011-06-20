@@ -35,56 +35,47 @@ public class Store extends FileOutputter {
 
 		TreeSet<Integer> pagesToKeep = new TreeSet<Integer>();
 
-		TreeSet<Integer> pagesToReserve = new TreeSet<Integer>();
-
 		int numberOfPages = reader.getNumberOfPages();
 
-		for (int i = 1; i <= numberOfPages; i++) {
+		for (Integer pageNumber = 1; pageNumber <= numberOfPages; pageNumber++) {
 
-			if (reservePages.contains(i)) {
+			if (!reservePages.contains(pageNumber)) {
 
-				pagesToReserve.add(i);
+				pagesToKeep.add(pageNumber);
 
-			} else {
-
-				pagesToKeep.add(i);
-
-			}
-
-		}
-
-		for (Integer pageReserved : pagesToReserve) {
-
-			if (pagesToKeep.contains(pageReserved)) {
 				continue;
-			}
-
-			OutputStream outputStream = getOutputStream(File.separator
-					+ pageReserved.toString());
-
-			Document document = new Document();
-
-			PdfCopy copy = new PdfCopy(document, outputStream);
-
-			document.open();
-
-			PdfImportedPage p = copy.getImportedPage(reader, pageReserved);
-
-			try {
-
-				copy.addPage(p);
-
-			} catch (Exception e) {
-
-				e.printStackTrace();
-
-			} finally {
-
-				document.close();
 
 			}
+
+			OutputStream os = getOutputStream(File.separator + pageNumber);
+
+			extractPage(pageNumber, os);
 
 		}
+
+		saveRemainder(pagesToKeep);
+
+	}
+
+	private void extractPage(int pageNumber, OutputStream os)
+			throws IOException, DocumentException {
+
+		Document document = new Document();
+
+		PdfCopy copy = new PdfCopy(document, os);
+
+		document.open();
+
+		PdfImportedPage p = copy.getImportedPage(reader, pageNumber);
+
+		copy.addPage(p);
+
+		document.close();
+
+	}
+
+	private void saveRemainder(Collection<Integer> pagesToKeep)
+			throws IOException, DocumentException {
 
 		reader.selectPages(new ArrayList<Integer>(pagesToKeep));
 

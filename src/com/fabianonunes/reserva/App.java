@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
@@ -17,13 +16,11 @@ import com.itextpdf.text.DocumentException;
 
 public class App {
 
+	private static GnuParser parser;
+
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws IOException,
 			DocumentException {
-		
-		for (String string : args) {
-			System.out.println(string);
-		}
 
 		Option oMethod = OptionBuilder.withArgName("arquivo")
 				.withDescription("reserva as páginas em branco do arquivo")
@@ -37,7 +34,7 @@ public class App {
 		options.addOption(oMethod);
 		options.addOption(oRestore);
 
-		CommandLineParser parser = new GnuParser();
+		parser = new GnuParser();
 
 		try {
 
@@ -63,7 +60,7 @@ public class App {
 		} catch (ParseException e) {
 
 			printHelp(options);
-			
+
 			e.printStackTrace();
 
 		}
@@ -91,11 +88,7 @@ public class App {
 
 		}
 
-		if (!reservedDir.exists()) {
-
-			reservedDir.mkdir();
-
-		} else if (reservedDir.exists() && !reservedDir.isDirectory()) {
+		if (reservedDir.isFile()) {
 
 			throw new IOException("target <" + reservedDir + "> exists");
 
