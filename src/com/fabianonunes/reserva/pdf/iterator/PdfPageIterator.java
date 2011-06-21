@@ -30,9 +30,6 @@ public class PdfPageIterator<T> {
 
 		PdfDecoder.setFontReplacements(decoder);
 
-		System.setProperty("org.jpedal.hires", "true");
-		System.setProperty("org.jpedal.jai", "true");
-
 		decoder.setExtractionMode(PdfDecoder.FINALIMAGES
 				+ PdfDecoder.CLIPPEDIMAGES, 300, 1);
 

@@ -123,7 +123,7 @@ public class ImageKeys {
 		float scale = (float) 800
 				/ Math.max(imageOfPage.getHeight(), imageOfPage.getWidth());
 
-		RenderedOp irop = null;
+		RenderedOp irop = imageOfPage;
 
 		if (width > height) {
 
@@ -137,13 +137,13 @@ public class ImageKeys {
 			irop = ScaleDescriptor.create(irop, scale * factor, scale * factor,
 					0f, 0f, null, null);
 
-			irop = SubsampleBinaryToGrayDescriptor.create(
-					irop.getAsBufferedImage(), 1 / factor, 1 / factor, hints);
+			// irop = SubsampleBinaryToGrayDescriptor.create(
+			// irop.getAsBufferedImage(), 1 / factor, 1 / factor, hints);
 
 		} else {
 
-			irop = SubsampleBinaryToGrayDescriptor.create(imageOfPage, scale,
-					scale, hints);
+			// irop = SubsampleBinaryToGrayDescriptor.create(imageOfPage, scale,
+			// scale, hints);
 
 		}
 

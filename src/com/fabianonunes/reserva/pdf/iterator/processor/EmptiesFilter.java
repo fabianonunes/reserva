@@ -1,6 +1,9 @@
 package com.fabianonunes.reserva.pdf.iterator.processor;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
 
 import com.fabianonunes.reserva.image.ImageKeys;
 
@@ -11,6 +14,9 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
 		BufferedImage imageOfPage = iterator.getDecoder().getPageAsImage(
 				pageNumber);
+
+		ImageIO.write(imageOfPage, "PNG", new File("/home/fabiano/"
+				+ pageNumber + ".png"));
 
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);
 
