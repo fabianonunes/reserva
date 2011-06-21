@@ -1,18 +1,16 @@
-package com.fabianonunes.reserva.pdf.processor;
+package com.fabianonunes.reserva.pdf.iterator.processor;
 
 import java.awt.image.BufferedImage;
 
 import com.fabianonunes.reserva.image.ImageKeys;
-import com.fabianonunes.reserva.pdf.PdfImageUtils;
-import com.itextpdf.text.pdf.PdfDictionary;
 
 public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
 	@Override
-	public Integer process(PdfDictionary page, Integer pageNumber)
-			throws Throwable {
-		
-		BufferedImage imageOfPage = PdfImageUtils.extractImageFromPage(page);
+	public Integer process(Integer pageNumber) throws Throwable {
+
+		BufferedImage imageOfPage = iterator.getDecoder().getPageAsImage(
+				pageNumber);
 
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);
 
@@ -70,6 +68,5 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 		return null;
 
 	}
-
 
 }
