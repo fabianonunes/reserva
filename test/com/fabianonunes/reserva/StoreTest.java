@@ -19,7 +19,7 @@ public class StoreTest {
 
 		s = new Store(
 				new File(
-						"/home/fabiano/Desktop/separa/AIRR.0040700-13.2005.5.17.0012.P1.pdf"));
+						"/home/fabiano/Desktop/separa/reserva-gabarito.pdf"));
 	}
 
 	@After

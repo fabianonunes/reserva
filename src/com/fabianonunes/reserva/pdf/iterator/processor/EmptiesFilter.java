@@ -76,9 +76,18 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
 	}
 
+	/**
+	 * Renderiza a página como uma imagem usando o decoder do JPedal. Como o
+	 * JPedal não é thread-safe, essa thread precisou ficar synchronized
+	 * 
+	 * @param pageNumber
+	 *            Número da página (começa em 1)
+	 * @return A imagem bruta do rendering
+	 * @throws PdfException
+	 */
 	synchronized private BufferedImage getImage(Integer pageNumber)
 			throws PdfException {
-		
+
 		return iterator.getDecoder().getPageAsImage(pageNumber);
 
 	}
