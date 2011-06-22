@@ -35,7 +35,9 @@ public class PdfPageIterator<T> {
 
 		decoder.openPdfFile(file.getAbsolutePath());
 
-		setTotalOfPages(decoder.getNumberOfPages());
+		setTotalOfPages(decoder.getPageCount());
+		
+		System.out.println("pages: " + decoder.getNumberOfPages());
 
 	}
 
@@ -62,7 +64,7 @@ public class PdfPageIterator<T> {
 
 		Vector<T> retVal = new Vector<T>();
 
-		ExecutorService executor = Executors.newFixedThreadPool(3);
+		ExecutorService executor = Executors.newFixedThreadPool(4);
 
 		LinkedList<Future<T>> tasks = new LinkedList<Future<T>>();
 

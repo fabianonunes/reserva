@@ -1,7 +1,9 @@
 package com.fabianonunes.reserva.image;
 
-import java.awt.RenderingHints;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.io.IOException;
 
 import javax.media.jai.Histogram;
 import javax.media.jai.Interpolation;
@@ -10,7 +12,6 @@ import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.RotateDescriptor;
 import javax.media.jai.operator.ScaleDescriptor;
-import javax.media.jai.operator.SubsampleBinaryToGrayDescriptor;
 
 @SuppressWarnings("restriction")
 public class ImageKeys {
@@ -109,27 +110,27 @@ public class ImageKeys {
 
 	}
 
-	public static ImageKeys normalize(RenderedImage imageOfPage) {
+	public static ImageKeys normalize(BufferedImage imageOfPage)
+			throws IOException {
 
 		int width = imageOfPage.getWidth();
 		int height = imageOfPage.getHeight();
 
-		Interpolation interpolation = Interpolation
-				.getInstance(Interpolation.INTERP_BICUBIC_2);
+		BufferedImage image = new BufferedImage(width, height,
+				BufferedImage.TYPE_BYTE_GRAY);
+		Graphics g = image.getGraphics();
+		g.drawImage(imageOfPage, 0, 0, null);
+		g.dispose();
 
-		RenderingHints hints = new RenderingHints(JAI.KEY_INTERPOLATION,
-				interpolation);
+		float scale = (float) 800 / Math.max(height, width);
 
-		float scale = (float) 800
-				/ Math.max(imageOfPage.getHeight(), imageOfPage.getWidth());
-
-		RenderedOp irop = imageOfPage;
+		RenderedImage irop = image;
 
 		if (width > height) {
 
 			float factor = 1.2f;
 
-			irop = RotateDescriptor.create(imageOfPage, 0f, 0f,
+			irop = RotateDescriptor.create(image, 0f, 0f,
 					(float) Math.toRadians(90f),
 					Interpolation.getInstance(Interpolation.INTERP_BICUBIC_2),
 					null, null);
@@ -137,18 +138,9 @@ public class ImageKeys {
 			irop = ScaleDescriptor.create(irop, scale * factor, scale * factor,
 					0f, 0f, null, null);
 
-			// irop = SubsampleBinaryToGrayDescriptor.create(
-			// irop.getAsBufferedImage(), 1 / factor, 1 / factor, hints);
-
-		} else {
-
-			// irop = SubsampleBinaryToGrayDescriptor.create(imageOfPage, scale,
-			// scale, hints);
-
 		}
 
 		return new ImageKeys(irop);
 
 	}
-
 }

@@ -5,6 +5,8 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import org.jpedal.exception.PdfException;
+
 import com.fabianonunes.reserva.image.ImageKeys;
 
 public class EmptiesFilter extends CLIPageProcessor<Integer> {
@@ -12,8 +14,7 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 	@Override
 	public Integer process(Integer pageNumber) throws Throwable {
 
-		BufferedImage imageOfPage = iterator.getDecoder().getPageAsImage(
-				pageNumber);
+		BufferedImage imageOfPage = getImage(pageNumber);
 
 		ImageIO.write(imageOfPage, "PNG", new File("/home/fabiano/"
 				+ pageNumber + ".png"));
@@ -72,6 +73,13 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 		}
 
 		return null;
+
+	}
+
+	synchronized private BufferedImage getImage(Integer pageNumber)
+			throws PdfException {
+		
+		return iterator.getDecoder().getPageAsImage(pageNumber);
 
 	}
 
