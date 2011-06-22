@@ -117,9 +117,7 @@ public class ImageKeys {
 
 		if (width > height) {
 
-			RenderedImage rop = imageOfPage;
-
-			RenderedOp irop = RotateDescriptor.create(rop, 0f, 0f,
+			RenderedOp irop = RotateDescriptor.create(imageOfPage, 0f, 0f,
 					(float) Math.toRadians(90f),
 					Interpolation.getInstance(Interpolation.INTERP_BICUBIC_2),
 					null, null);

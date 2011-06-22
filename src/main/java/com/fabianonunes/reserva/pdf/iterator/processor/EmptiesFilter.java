@@ -20,14 +20,6 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 		Double topKey = keys.getTopKey(0.08f);
 		Double bottomKey = keys.getBottomKey(0.08f);
 
-		System.out.println("=============");
-		System.out.println("page: " + pageNumber);
-		System.out.println(key);
-		System.out.println(middleKey);
-		System.out.println(topKey);
-		System.out.println(bottomKey);
-		System.out.println("=============");
-
 		Boolean isLightPage = false;
 
 		if (topKey <= 8d && (key < 15d || middleKey < 30d || bottomKey < 30)) {
