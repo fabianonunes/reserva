@@ -113,6 +113,8 @@ public class App {
 	}
 
 	private static void printHelp(Options options) {
+		
+		System.out.println("Version: Reserva 0.1 - 2011-06-22 [ https://github.com/fabianonunes/reserva ]");
 
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("reserva", options);

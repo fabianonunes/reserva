@@ -24,6 +24,8 @@ public class PdfPageIterator<T> {
 
 	private Integer currentPage;
 
+	private PageProcessor<T> processor;
+
 	public PdfPageIterator(File file) throws IOException, PdfException {
 
 		decoder = new PdfDecoder(true);
@@ -36,7 +38,7 @@ public class PdfPageIterator<T> {
 		decoder.openPdfFile(file.getAbsolutePath());
 
 		setTotalOfPages(decoder.getPageCount());
-		
+
 		System.out.println("pages: " + decoder.getNumberOfPages());
 
 	}
@@ -58,7 +60,9 @@ public class PdfPageIterator<T> {
 	 * @return a collection of results
 	 * @author Fabiano Nunes
 	 */
-	public Collection<T> iterate(final PageProcessor<T> processor) {
+	public Collection<T> iterate(final PageProcessor<T> pageProcessor) {
+
+		processor = pageProcessor;
 
 		processor.setIterator(this);
 
@@ -76,8 +80,6 @@ public class PdfPageIterator<T> {
 
 				@Override
 				public T call() throws Exception {
-
-					setCurrentPage(counter);
 
 					T iretVal = null;
 
@@ -123,9 +125,7 @@ public class PdfPageIterator<T> {
 				e.printStackTrace();
 			}
 
-			Float progress = (float) (++counter * 100 / tasks.size());
-
-			processor.setProgress(progress);
+			setCurrentPage(++counter);
 
 		}
 
@@ -146,7 +146,13 @@ public class PdfPageIterator<T> {
 	}
 
 	public void setCurrentPage(Integer currentPage) {
+
 		this.currentPage = currentPage;
+
+		Float progress = (float) (currentPage * 100 / getTotalOfPages());
+
+		processor.setProgress(progress);
+
 	}
 
 	public Integer getCurrentPage() {

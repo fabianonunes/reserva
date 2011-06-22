@@ -11,7 +11,6 @@ import javax.media.jai.JAI;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.RotateDescriptor;
-import javax.media.jai.operator.ScaleDescriptor;
 
 @SuppressWarnings("restriction")
 public class ImageKeys {
@@ -116,31 +115,28 @@ public class ImageKeys {
 		int width = imageOfPage.getWidth();
 		int height = imageOfPage.getHeight();
 
+		if (width > height) {
+
+			RenderedOp irop = RotateDescriptor.create(imageOfPage, 0f, 0f,
+					(float) Math.toRadians(90f),
+					Interpolation.getInstance(Interpolation.INTERP_BICUBIC_2),
+					null, null);
+
+			imageOfPage = irop.getAsBufferedImage();
+
+			width = imageOfPage.getWidth();
+			height = imageOfPage.getHeight();
+
+		}
+
 		BufferedImage image = new BufferedImage(width, height,
 				BufferedImage.TYPE_BYTE_GRAY);
 		Graphics g = image.getGraphics();
 		g.drawImage(imageOfPage, 0, 0, null);
 		g.dispose();
 
-		float scale = (float) 800 / Math.max(height, width);
-
-		RenderedImage irop = image;
-
-		if (width > height) {
-
-			float factor = 1.2f;
-
-			irop = RotateDescriptor.create(image, 0f, 0f,
-					(float) Math.toRadians(90f),
-					Interpolation.getInstance(Interpolation.INTERP_BICUBIC_2),
-					null, null);
-
-			irop = ScaleDescriptor.create(irop, scale * factor, scale * factor,
-					0f, 0f, null, null);
-
-		}
-
-		return new ImageKeys(irop);
+		return new ImageKeys(image);
 
 	}
+
 }
