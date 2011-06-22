@@ -11,6 +11,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
+import org.jpedal.exception.PdfException;
 
 import com.itextpdf.text.DocumentException;
 
@@ -20,7 +21,7 @@ public class App {
 
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws IOException,
-			DocumentException {
+			DocumentException, PdfException {
 
 		Option oMethod = OptionBuilder.withArgName("arquivo")
 				.withDescription("reserva as páginas em branco do arquivo")
@@ -101,7 +102,7 @@ public class App {
 	}
 
 	private static void store(String fileToStore) throws IOException,
-			DocumentException {
+			DocumentException, PdfException {
 
 		File inputFile = new File(fileToStore);
 

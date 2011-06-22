@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
 
-import com.fabianonunes.reserva.pdf.PdfPageIterator;
-import com.fabianonunes.reserva.pdf.processor.EmptiesFilter;
+import org.jpedal.exception.PdfException;
+
+import com.fabianonunes.reserva.pdf.iterator.PdfPageIterator;
+import com.fabianonunes.reserva.pdf.iterator.processor.EmptiesFilter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
@@ -29,7 +31,7 @@ public class Store extends FileOutputter {
 
 	}
 
-	public void split() throws IOException, DocumentException {
+	public void split() throws IOException, DocumentException, PdfException {
 
 		reservePages = analyzePages();
 
@@ -89,9 +91,11 @@ public class Store extends FileOutputter {
 
 	}
 
-	protected Collection<Integer> analyzePages() {
+	protected Collection<Integer> analyzePages() throws IOException,
+			PdfException {
 
-		PdfPageIterator<Integer> iterator = new PdfPageIterator<Integer>(reader);
+		PdfPageIterator<Integer> iterator = new PdfPageIterator<Integer>(
+				inputFile);
 
 		return iterator.iterate(new EmptiesFilter());
 

@@ -1,4 +1,4 @@
-package com.fabianonunes.reserva.pdf.processor;
+package com.fabianonunes.reserva.pdf.iterator.processor;
 
 
 import java.util.Formatter;
@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fabianonunes.reserva.pdf.PdfPageIterator;
+import com.fabianonunes.reserva.pdf.iterator.PdfPageIterator;
 
 public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 

@@ -1,4 +1,4 @@
-package com.fabianonunes.reserva.pdf;
+package com.fabianonunes.reserva.pdf.iterator;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,34 +11,42 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import com.fabianonunes.reserva.pdf.processor.PageProcessor;
-import com.itextpdf.text.pdf.PdfDictionary;
-import com.itextpdf.text.pdf.PdfReader;
+import org.jpedal.PdfDecoder;
+import org.jpedal.exception.PdfException;
+
+import com.fabianonunes.reserva.pdf.iterator.processor.PageProcessor;
 
 public class PdfPageIterator<T> {
 
-	PdfReader reader;
+	private PdfDecoder decoder;
 
 	private Integer totalOfPages;
 
 	private Integer currentPage;
 
-	public PdfPageIterator(File file) throws IOException {
-		setReader(new PdfReader(file.getAbsolutePath()));
-		setTotalOfPages(getReader().getNumberOfPages());
+	public PdfPageIterator(File file) throws IOException, PdfException {
+
+		decoder = new PdfDecoder(true);
+
+		PdfDecoder.setFontReplacements(decoder);
+
+		decoder.setExtractionMode(PdfDecoder.FINALIMAGES
+				+ PdfDecoder.CLIPPEDIMAGES, 300, 1);
+
+		decoder.openPdfFile(file.getAbsolutePath());
+
+		setTotalOfPages(decoder.getPageCount());
+		
+		System.out.println("pages: " + decoder.getNumberOfPages());
+
 	}
 
-	public PdfPageIterator(PdfReader reader) {
-		setReader(reader);
-		setTotalOfPages(getReader().getNumberOfPages());
+	public void setDecoder(PdfDecoder decoder) {
+		this.decoder = decoder;
 	}
 
-	public void setReader(PdfReader reader) {
-		this.reader = reader;
-	}
-
-	public PdfReader getReader() {
-		return this.reader;
+	public PdfDecoder getDecoder() {
+		return decoder;
 	}
 
 	/**
@@ -51,12 +59,12 @@ public class PdfPageIterator<T> {
 	 * @author Fabiano Nunes
 	 */
 	public Collection<T> iterate(final PageProcessor<T> processor) {
-		
+
 		processor.setIterator(this);
 
 		Vector<T> retVal = new Vector<T>();
 
-		ExecutorService executor = Executors.newFixedThreadPool(3);
+		ExecutorService executor = Executors.newFixedThreadPool(4);
 
 		LinkedList<Future<T>> tasks = new LinkedList<Future<T>>();
 
@@ -71,13 +79,11 @@ public class PdfPageIterator<T> {
 
 					setCurrentPage(counter);
 
-					PdfDictionary page = reader.getPageN(counter);
-
 					T iretVal = null;
 
 					try {
 
-						iretVal = processor.process(page, counter);
+						iretVal = processor.process(counter);
 
 					} catch (Throwable e) {
 						e.printStackTrace();
@@ -124,7 +130,7 @@ public class PdfPageIterator<T> {
 		}
 
 		executor.shutdown();
-		
+
 		System.out.println("");
 
 		return retVal;
