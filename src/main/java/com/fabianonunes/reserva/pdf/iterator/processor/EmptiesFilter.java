@@ -1,9 +1,6 @@
 package com.fabianonunes.reserva.pdf.iterator.processor;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.imageio.ImageIO;
 
 import org.jpedal.exception.PdfException;
 
@@ -16,15 +13,20 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
 		BufferedImage imageOfPage = getImage(pageNumber);
 
-		ImageIO.write(imageOfPage, "PNG", new File("/home/fabiano/"
-				+ pageNumber + ".png"));
-
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);
 
 		Double key = keys.getKey(0.10f);
 		Double middleKey = keys.getMiddleKey(0.08f);
 		Double topKey = keys.getTopKey(0.08f);
 		Double bottomKey = keys.getBottomKey(0.08f);
+
+		System.out.println("=============");
+		System.out.println("page: " + pageNumber);
+		System.out.println(key);
+		System.out.println(middleKey);
+		System.out.println(topKey);
+		System.out.println(bottomKey);
+		System.out.println("=============");
 
 		Boolean isLightPage = false;
 

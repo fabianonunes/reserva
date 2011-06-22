@@ -19,7 +19,7 @@ public class StoreTest {
 
 		s = new Store(
 				new File(
-						"/home/fabiano/Desktop/separa/reserva-gabarito.pdf"));
+						"/home/fabiano/Desktop/horizontais.pdf"));
 	}
 
 	@After
