@@ -6,6 +6,7 @@ import java.io.File;
 import org.jpedal.PdfDecoder;
 import org.jpedal.exception.PdfException;
 
+import com.fabianonunes.reserva.classification.Analyzer;
 import com.fabianonunes.reserva.image.ImageKeys;
 
 public class EmptiesFilter extends CLIPageProcessor<Integer> {
@@ -31,64 +32,49 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
 	@Override
 	public Integer process(Integer pageNumber) throws Throwable {
-		
+
 		super.process(pageNumber);
-		
+
 		BufferedImage imageOfPage = getImage(pageNumber);
 
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);
 
-		Double key = keys.getKey(0.10f);
+		// Double key = keys.getKey(0.10f);
 		Double middle = keys.getMiddle(0.08f);
 		Double top = keys.getTop(0.08f);
 		Double bottom = keys.getBottom(0.08f);
 
-		Boolean isLightPage = false;
+		// Boolean isLightPage = false;
+		// if (top <= 8d && (key < 15d || middle < 30d || bottom < 30)) {
+		// isLightPage = true;
+		// }
+		// if (top <= 8d && middle < 8d) {
+		// isLightPage = true;
+		// }
+		// if (key <= 19.8d && top <= 17) {
+		// isLightPage = true;
+		// }
+		// if (key > 19.8d && key <= 21d) {
+		// if (top <= 18d) {
+		// isLightPage = true;
+		// }
+		// } else if (key < 26d) {
+		// if (bottom + top < 31d) {
+		// isLightPage = true;
+		// }
+		// }
+		// if (top + middle + bottom > 95) {
+		// isLightPage = false;
+		// }
 
-		if (top <= 8d && (key < 15d || middle < 30d || bottom < 30)) {
+		double dcl = Analyzer.check(top, middle, bottom);
 
-			isLightPage = true;
-
-		}
-
-		if (top <= 8d && middle < 8d) {
-
-			isLightPage = true;
-
-		}
-
-		if (key <= 19.8d && top <= 17) {
-
-			isLightPage = true;
-
-		}
-
-		if (key > 19.8d && key <= 21d) {
-
-			if (top <= 18d) {
-				isLightPage = true;
-			}
-
-		} else if (key < 26d) {
-
-			if (bottom + top < 31d) {
-				isLightPage = true;
-			}
-
-		}
-
-		if (top + middle + bottom > 95) {
-
-			isLightPage = false;
-
-		}
-
-		if (isLightPage) {
+		if (dcl == 1.0) {
 
 			return pageNumber;
 
 		}
-		
+
 		return null;
 
 	}
