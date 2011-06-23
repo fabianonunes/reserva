@@ -5,7 +5,7 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 
-public class Analyzer {
+public class ImageClassifier {
 
 	public static double check(double vtop, double vmiddle, double vbottom)
 			throws Exception {
@@ -33,7 +33,7 @@ public class Analyzer {
 		instance.setDataset(unlabeled);
 		unlabeled.add(instance);
 
-		WekaWrapper wrapper = new WekaWrapper();
+		WrapperClassifier wrapper = new WrapperClassifier();
 
 		return wrapper.classifyInstance(instance);
 

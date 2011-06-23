@@ -6,7 +6,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.RevisionUtils;
 
-public class WekaWrapper extends Classifier {
+public class WrapperClassifier extends Classifier {
 
 	private static final long serialVersionUID = 1L;
 
@@ -94,15 +94,6 @@ public class WekaWrapper extends Classifier {
 				+ this.getClass().getName() + "/WekaClassifier";
 	}
 
-	/**
-	 * Runs the classfier from commandline.
-	 * 
-	 * @param args
-	 *            the commandline arguments
-	 */
-	public static void main(String args[]) {
-		runClassifier(new WekaWrapper(), args);
-	}
 }
 
 class WekaClassifier {

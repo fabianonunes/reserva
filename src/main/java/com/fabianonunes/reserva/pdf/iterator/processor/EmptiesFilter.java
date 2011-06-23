@@ -6,7 +6,7 @@ import java.io.File;
 import org.jpedal.PdfDecoder;
 import org.jpedal.exception.PdfException;
 
-import com.fabianonunes.reserva.classification.Analyzer;
+import com.fabianonunes.reserva.classification.ImageClassifier;
 import com.fabianonunes.reserva.image.ImageKeys;
 
 public class EmptiesFilter extends CLIPageProcessor<Integer> {
@@ -67,7 +67,7 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 		// isLightPage = false;
 		// }
 
-		double dcl = Analyzer.check(top, middle, bottom);
+		double dcl = ImageClassifier.check(top, middle, bottom);
 
 		if (dcl == 1.0) {
 
