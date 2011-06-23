@@ -1,6 +1,6 @@
 package com.fabianonunes.reserva.pdf.iterator.processor;
 
-import com.fabianonunes.reserva.pdf.iterator.PdfPageIterator;
+import com.fabianonunes.reserva.pdf.iterator.PageIterator;
 
 /**
  * Interface que define um processor para a classe <tt>PdfPageIterator</tt>. O
@@ -36,18 +36,12 @@ public interface PageProcessor<T> {
 	public Boolean isStopped();
 
 	/**
-	 * Sets the progress of processor
-	 * 
-	 * @param progress
-	 *            the progress from 0 to 100
-	 */
-	public void setProgress(Float progress);
-
-	/**
 	 * Sets a iterator as a property of this processor
 	 * 
 	 * @param iterator
 	 */
-	public void setIterator(PdfPageIterator<T> iterator);
+	public void setIterator(PageIterator<T> iterator);
+
+	public int getNumberOfPages();
 
 }

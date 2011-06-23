@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 import org.jpedal.exception.PdfException;
 
-import com.fabianonunes.reserva.pdf.iterator.PdfPageIterator;
+import com.fabianonunes.reserva.pdf.iterator.PageIterator;
 import com.fabianonunes.reserva.pdf.iterator.processor.EmptiesFilter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -94,10 +94,9 @@ public class Store extends FileOutputter {
 	protected Collection<Integer> analyzePages() throws IOException,
 			PdfException {
 
-		PdfPageIterator<Integer> iterator = new PdfPageIterator<Integer>(
-				inputFile);
+		PageIterator<Integer> iterator = new PageIterator<Integer>();
 
-		return iterator.iterate(new EmptiesFilter());
+		return iterator.iterate(new EmptiesFilter(inputFile));
 
 	}
 
