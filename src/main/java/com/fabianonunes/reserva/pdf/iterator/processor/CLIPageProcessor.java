@@ -6,13 +6,13 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fabianonunes.reserva.pdf.iterator.PdfPageIterator;
+import com.fabianonunes.reserva.pdf.iterator.PageIterator;
 
 public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 
 	private Boolean stop = false;
 
-	protected PdfPageIterator<T> iterator;
+	protected PageIterator<T> iterator;
 
 	@Override
 	public Boolean isStopped() {
@@ -25,13 +25,11 @@ public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 		this.stop = true;
 
 	}
-
-	public void printAndReturn(String text) {
-		System.out.print(text + "\r");
-	}
-
+	
 	@Override
-	public void setProgress(Float progress) {
+	public T process(Integer pageNumber) throws Throwable {
+		
+		Float progress = (float) (pageNumber * 100 / getNumberOfPages());
 
 		StringBuilder sb = new StringBuilder();
 
@@ -49,14 +47,20 @@ public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 		sb.append(empty);
 		sb.append("] ");
 
-		formater.format("%04d", iterator.getCurrentPage());
+		formater.format("%04d", pageNumber);
 
-		printAndReturn(sb.toString() + "/" + iterator.getTotalOfPages());
+		printAndReturn(sb.toString() + "/" + getNumberOfPages());
 
+		return null;
+		
 	}
-	
+
+	public void printAndReturn(String text) {
+		System.out.print(text + "\r");
+	}
+
 	@Override
-	public void setIterator(PdfPageIterator<T> iterator) {
+	public void setIterator(PageIterator<T> iterator) {
 		this.iterator = iterator;
 	}
 

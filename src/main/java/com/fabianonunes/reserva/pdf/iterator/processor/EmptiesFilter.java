@@ -1,16 +1,39 @@
 package com.fabianonunes.reserva.pdf.iterator.processor;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 
+import org.jpedal.PdfDecoder;
 import org.jpedal.exception.PdfException;
 
 import com.fabianonunes.reserva.image.ImageKeys;
 
 public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
+	private PdfDecoder decoder;
+
+	private Integer numberOfPages;
+
+	public EmptiesFilter(File file) throws PdfException {
+
+		decoder = new PdfDecoder(true);
+
+		PdfDecoder.setFontReplacements(decoder);
+
+		decoder.setExtractionMode(PdfDecoder.FINALIMAGES
+				+ PdfDecoder.CLIPPEDIMAGES, 300, 1);
+
+		decoder.openPdfFile(file.getAbsolutePath());
+
+		numberOfPages = decoder.getPageCount();
+
+	}
+
 	@Override
 	public Integer process(Integer pageNumber) throws Throwable {
-
+		
+		super.process(pageNumber);
+		
 		BufferedImage imageOfPage = getImage(pageNumber);
 
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);
@@ -82,7 +105,14 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 	synchronized private BufferedImage getImage(Integer pageNumber)
 			throws PdfException {
 
-		return iterator.getDecoder().getPageAsImage(pageNumber);
+		return decoder.getPageAsImage(pageNumber);
+
+	}
+
+	@Override
+	public int getNumberOfPages() {
+
+		return numberOfPages;
 
 	}
 

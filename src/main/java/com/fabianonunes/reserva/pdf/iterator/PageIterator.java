@@ -1,7 +1,5 @@
 package com.fabianonunes.reserva.pdf.iterator;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -11,43 +9,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.jpedal.PdfDecoder;
-import org.jpedal.exception.PdfException;
-
 import com.fabianonunes.reserva.pdf.iterator.processor.PageProcessor;
 
-public class PdfPageIterator<T> {
-
-	private PdfDecoder decoder;
-
-	private Integer totalOfPages;
-
-	private Integer currentPage;
+public class PageIterator<T> {
 
 	private PageProcessor<T> processor;
-
-	public PdfPageIterator(File file) throws IOException, PdfException {
-
-		decoder = new PdfDecoder(true);
-
-		PdfDecoder.setFontReplacements(decoder);
-
-		decoder.setExtractionMode(PdfDecoder.FINALIMAGES
-				+ PdfDecoder.CLIPPEDIMAGES, 300, 1);
-
-		decoder.openPdfFile(file.getAbsolutePath());
-
-		setTotalOfPages(decoder.getPageCount());
-
-	}
-
-	public void setDecoder(PdfDecoder decoder) {
-		this.decoder = decoder;
-	}
-
-	public PdfDecoder getDecoder() {
-		return decoder;
-	}
 
 	/**
 	 * Iterates over all PDF pages and execute
@@ -60,17 +26,13 @@ public class PdfPageIterator<T> {
 	 */
 	public Collection<T> iterate(final PageProcessor<T> pageProcessor) {
 
-		processor = pageProcessor;
-
-		processor.setIterator(this);
-
 		Vector<T> retVal = new Vector<T>();
-
-		ExecutorService executor = Executors.newFixedThreadPool(4);
 
 		LinkedList<Future<T>> tasks = new LinkedList<Future<T>>();
 
-		for (int i = 1; i <= getTotalOfPages(); ++i) {
+		ExecutorService executor = Executors.newFixedThreadPool(4);
+
+		for (int i = 1; i <= pageProcessor.getNumberOfPages(); ++i) {
 
 			final int counter = i;
 
@@ -105,8 +67,6 @@ public class PdfPageIterator<T> {
 
 		}
 
-		int counter = 0;
-
 		for (Future<T> future : tasks) {
 
 			try {
@@ -123,8 +83,6 @@ public class PdfPageIterator<T> {
 				e.printStackTrace();
 			}
 
-			setCurrentPage(++counter);
-
 		}
 
 		executor.shutdown();
@@ -133,28 +91,6 @@ public class PdfPageIterator<T> {
 
 		return retVal;
 
-	}
-
-	public void setTotalOfPages(Integer totalOfPages) {
-		this.totalOfPages = totalOfPages;
-	}
-
-	public Integer getTotalOfPages() {
-		return totalOfPages;
-	}
-
-	public void setCurrentPage(Integer currentPage) {
-
-		this.currentPage = currentPage;
-
-		Float progress = (float) (currentPage * 100 / getTotalOfPages());
-
-		processor.setProgress(progress);
-
-	}
-
-	public Integer getCurrentPage() {
-		return currentPage;
 	}
 
 }
