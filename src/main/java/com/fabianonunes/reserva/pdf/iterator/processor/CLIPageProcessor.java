@@ -1,6 +1,5 @@
 package com.fabianonunes.reserva.pdf.iterator.processor;
 
-
 import java.util.Formatter;
 import java.util.Locale;
 
@@ -29,6 +28,14 @@ public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 	@Override
 	public T process(Integer pageNumber) throws Throwable {
 		
+		printProgress(pageNumber);
+		
+		return null;
+		
+	}
+	
+	public void printProgress(Integer pageNumber) {
+		
 		Float progress = (float) (pageNumber * 100 / getNumberOfPages());
 
 		StringBuilder sb = new StringBuilder();
@@ -50,9 +57,14 @@ public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 		formater.format("%04d", pageNumber);
 
 		printAndReturn(sb.toString() + "/" + getNumberOfPages());
-
-		return null;
 		
+		if(pageNumber == getNumberOfPages()){
+			
+			System.out.println("");
+			
+		}
+
+
 	}
 
 	public void printAndReturn(String text) {

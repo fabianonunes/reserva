@@ -23,7 +23,7 @@ public class ImageKeys {
 
 	}
 
-	public Double getMiddleKey(float margin) {
+	public Double getMiddle(float margin) {
 
 		float pageWidth = rop.getWidth();
 
@@ -65,7 +65,7 @@ public class ImageKeys {
 
 	}
 
-	public Double getTopKey(float margin) {
+	public Double getTop(float margin) {
 
 		float pageWidth = rop.getWidth();
 
@@ -89,7 +89,7 @@ public class ImageKeys {
 
 	}
 
-	public Double getBottomKey(Float margin) {
+	public Double getBottom(Float margin) {
 
 		float pageWidth = rop.getWidth();
 		float x = pageWidth * margin * 2;

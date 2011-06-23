@@ -87,8 +87,6 @@ public class PageIterator<T> {
 
 		executor.shutdown();
 
-		System.out.println("");
-
 		return retVal;
 
 	}

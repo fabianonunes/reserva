@@ -39,25 +39,25 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);
 
 		Double key = keys.getKey(0.10f);
-		Double middleKey = keys.getMiddleKey(0.08f);
-		Double topKey = keys.getTopKey(0.08f);
-		Double bottomKey = keys.getBottomKey(0.08f);
+		Double middle = keys.getMiddle(0.08f);
+		Double top = keys.getTop(0.08f);
+		Double bottom = keys.getBottom(0.08f);
 
 		Boolean isLightPage = false;
 
-		if (topKey <= 8d && (key < 15d || middleKey < 30d || bottomKey < 30)) {
+		if (top <= 8d && (key < 15d || middle < 30d || bottom < 30)) {
 
 			isLightPage = true;
 
 		}
 
-		if (topKey <= 8d && middleKey < 8d) {
+		if (top <= 8d && middle < 8d) {
 
 			isLightPage = true;
 
 		}
 
-		if (key <= 19.8d && topKey <= 17) {
+		if (key <= 19.8d && top <= 17) {
 
 			isLightPage = true;
 
@@ -65,19 +65,19 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 
 		if (key > 19.8d && key <= 21d) {
 
-			if (topKey <= 18d) {
+			if (top <= 18d) {
 				isLightPage = true;
 			}
 
 		} else if (key < 26d) {
 
-			if (bottomKey + topKey < 31d) {
+			if (bottom + top < 31d) {
 				isLightPage = true;
 			}
 
 		}
 
-		if (topKey + middleKey + bottomKey > 95) {
+		if (top + middle + bottom > 95) {
 
 			isLightPage = false;
 
@@ -88,7 +88,7 @@ public class EmptiesFilter extends CLIPageProcessor<Integer> {
 			return pageNumber;
 
 		}
-
+		
 		return null;
 
 	}
