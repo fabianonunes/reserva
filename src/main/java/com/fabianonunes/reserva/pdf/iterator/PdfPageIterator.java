@@ -39,8 +39,6 @@ public class PdfPageIterator<T> {
 
 		setTotalOfPages(decoder.getPageCount());
 
-		System.out.println("pages: " + decoder.getNumberOfPages());
-
 	}
 
 	public void setDecoder(PdfDecoder decoder) {
