@@ -26,6 +26,8 @@ public class PageIterator<T> {
 	 */
 	public Collection<T> iterate(final PageProcessor<T> pageProcessor) {
 
+		processor = pageProcessor;
+
 		Vector<T> retVal = new Vector<T>();
 
 		LinkedList<Future<T>> tasks = new LinkedList<Future<T>>();
