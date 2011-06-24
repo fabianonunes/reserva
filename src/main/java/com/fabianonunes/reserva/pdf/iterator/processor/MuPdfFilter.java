@@ -44,33 +44,9 @@ public class MuPdfFilter extends CLIPageProcessor<Integer> {
 
 		ImageKeys keys = ImageKeys.normalize(imageOfPage);
 
-		// Double key = keys.getKey(0.10f);
 		Double middle = keys.getMiddle(0.08f);
 		Double top = keys.getTop(0.08f);
 		Double bottom = keys.getBottom(0.08f);
-
-		// Boolean isLightPage = false;
-		// if (top <= 8d && (key < 15d || middle < 30d || bottom < 30)) {
-		// isLightPage = true;
-		// }
-		// if (top <= 8d && middle < 8d) {
-		// isLightPage = true;
-		// }
-		// if (key <= 19.8d && top <= 17) {
-		// isLightPage = true;
-		// }
-		// if (key > 19.8d && key <= 21d) {
-		// if (top <= 18d) {
-		// isLightPage = true;
-		// }
-		// } else if (key < 26d) {
-		// if (bottom + top < 31d) {
-		// isLightPage = true;
-		// }
-		// }
-		// if (top + middle + bottom > 95) {
-		// isLightPage = false;
-		// }
 
 		double dcl = ImageClassifier.check(top, middle, bottom);
 
@@ -103,7 +79,7 @@ public class MuPdfFilter extends CLIPageProcessor<Integer> {
 
 		Page page = doc.getPage(pageNumber);
 
-		PageRenderer render = new PageRenderer(page, 1f, Page.PAGE_ROTATE_AUTO,
+		PageRenderer render = new PageRenderer(page, 0.5f, Page.PAGE_ROTATE_AUTO,
 				PageRenderer.IMAGE_TYPE_GRAY);
 		render.render(true);
 

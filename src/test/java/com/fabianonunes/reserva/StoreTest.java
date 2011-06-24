@@ -13,7 +13,7 @@ public class StoreTest {
 	@Before
 	public void setUp() throws Exception {
 
-		s = new Store(new File("/home/fabiano/training-pdf.pdf"));
+		s = new Store(new File("/home/fabiano/combo.pdf"));
 	}
 
 	@After
