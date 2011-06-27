@@ -4,6 +4,13 @@
 	<groupId>com.fabianonunes</groupId>
 	<artifactId>reserva</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
+	<scm>
+		<connection>scm:git:https://fabianonunes@github.com/fabianonunes/reserva.git</connection>
+		<url>scm:git:https://fabianonunes@github.com/fabianonunes/reserva.git</url>
+	</scm>
+
+
 	<repositories>
 		<repository>
 			<id>mvn.fabianonunes</id>
@@ -28,6 +35,11 @@
 	</pluginRepositories>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.1</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
