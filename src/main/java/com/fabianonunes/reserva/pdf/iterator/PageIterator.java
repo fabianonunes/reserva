@@ -32,7 +32,7 @@ public class PageIterator<T> {
 
 		LinkedList<Future<T>> tasks = new LinkedList<Future<T>>();
 
-		ExecutorService executor = Executors.newFixedThreadPool(4);
+		ExecutorService executor = Executors.newFixedThreadPool(7);
 
 		for (int i = 1; i <= pageProcessor.getNumberOfPages(); ++i) {
 
