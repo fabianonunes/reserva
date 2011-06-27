@@ -6,8 +6,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<scm>
-		<connection>scm:git:https://fabianonunes@github.com/fabianonunes/reserva.git</connection>
-		<url>scm:git:https://fabianonunes@github.com/fabianonunes/reserva.git</url>
+		<connection>scm:git:git@github.com:fabianonunes/reserva.git</connection>
+		<url>git@github.com:fabianonunes/reserva.git</url>
 	</scm>
 
 
