@@ -129,6 +129,21 @@ public class ImageKeys {
 
 		}
 
+		// float scale = (float) 350
+		// / Math.max(imageOfPage.getHeight(), imageOfPage.getWidth());
+		//
+		// float factor = 1f;
+		// RenderedOp r = ScaleDescriptor.create(imageOfPage, scale * factor,
+		// scale * factor, 0f, 0f, null, null);
+		//
+		// width = r.getWidth();
+		// height = r.getHeight();
+		//
+		// r = MedianFilterDescriptor.create(r,
+		// MedianFilterDescriptor.MEDIAN_MASK_SQUARE, 3, null);
+		//
+		// imageOfPage = r.getAsBufferedImage();
+
 		BufferedImage image = new BufferedImage(width, height,
 				BufferedImage.TYPE_BYTE_GRAY);
 		Graphics g = image.getGraphics();

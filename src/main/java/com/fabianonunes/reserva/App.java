@@ -14,14 +14,15 @@ import org.apache.commons.io.FilenameUtils;
 import org.jpedal.exception.PdfException;
 
 import com.itextpdf.text.DocumentException;
+import com.jmupdf.exceptions.DocException;
+import com.jmupdf.exceptions.DocSecurityException;
 
 public class App {
 
 	private static GnuParser parser;
 
 	@SuppressWarnings("static-access")
-	public static void main(String[] args) throws IOException,
-			DocumentException, PdfException {
+	public static void main(String[] args) throws Exception {
 
 		Option oMethod = OptionBuilder.withArgName("arquivo")
 				.withDescription("reserva as páginas em branco do arquivo")
@@ -101,8 +102,8 @@ public class App {
 
 	}
 
-	private static void store(String fileToStore) throws IOException,
-			DocumentException, PdfException {
+	private static void store(String fileToStore) throws PdfException,
+			DocException, DocSecurityException, IOException, DocumentException {
 
 		File inputFile = new File(fileToStore);
 
@@ -113,8 +114,9 @@ public class App {
 	}
 
 	private static void printHelp(Options options) {
-		
-		System.out.println("Version: Reserva 0.1 - 2011-06-22 [ https://github.com/fabianonunes/reserva ]");
+
+		System.out
+				.println("Version: Reserva 0.1 - 2011-06-22 [ https://github.com/fabianonunes/reserva ]");
 
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("reserva", options);
