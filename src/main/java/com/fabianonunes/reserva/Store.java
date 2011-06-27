@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
 
-import org.jpedal.exception.PdfException;
-
 import com.fabianonunes.reserva.pdf.iterator.PageIterator;
 import com.fabianonunes.reserva.pdf.iterator.processor.MuPdfFilter;
 import com.itextpdf.text.Document;
@@ -33,7 +31,7 @@ public class Store extends FileOutputter {
 
 	}
 
-	public void split() throws PdfException, DocException,
+	public void split() throws DocException,
 			DocSecurityException, IOException, DocumentException {
 
 		reservePages = analyzePages();
@@ -94,7 +92,7 @@ public class Store extends FileOutputter {
 
 	}
 
-	protected Collection<Integer> analyzePages() throws PdfException,
+	protected Collection<Integer> analyzePages() throws 
 			DocException, DocSecurityException {
 
 		PageIterator<Integer> iterator = new PageIterator<Integer>();

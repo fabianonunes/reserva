@@ -4,10 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import org.jpedal.exception.PdfException;
-
 import com.fabianonunes.reserva.classification.ImageClassifier;
 import com.fabianonunes.reserva.image.ImageKeys;
+import com.itextpdf.text.pdf.PdfException;
 import com.jmupdf.Page;
 import com.jmupdf.PageRenderer;
 import com.jmupdf.exceptions.DocException;
@@ -22,8 +21,7 @@ public class MuPdfFilter extends CLIPageProcessor<Integer> {
 
 	private String fileName;
 
-	public MuPdfFilter(File file) throws PdfException, DocException,
-			DocSecurityException {
+	public MuPdfFilter(File file) throws DocException, DocSecurityException {
 
 		fileName = file.getAbsolutePath();
 
@@ -79,8 +77,8 @@ public class MuPdfFilter extends CLIPageProcessor<Integer> {
 
 		Page page = doc.getPage(pageNumber);
 
-		PageRenderer render = new PageRenderer(page, 0.5f, Page.PAGE_ROTATE_AUTO,
-				PageRenderer.IMAGE_TYPE_GRAY);
+		PageRenderer render = new PageRenderer(page, 0.5f,
+				Page.PAGE_ROTATE_AUTO, PageRenderer.IMAGE_TYPE_GRAY);
 		render.render(true);
 
 		doc.dispose();

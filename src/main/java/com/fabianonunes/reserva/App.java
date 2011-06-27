@@ -11,7 +11,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
-import org.jpedal.exception.PdfException;
 
 import com.itextpdf.text.DocumentException;
 import com.jmupdf.exceptions.DocException;
@@ -102,8 +101,8 @@ public class App {
 
 	}
 
-	private static void store(String fileToStore) throws PdfException,
-			DocException, DocSecurityException, IOException, DocumentException {
+	private static void store(String fileToStore) throws DocException,
+			DocSecurityException, IOException, DocumentException {
 
 		File inputFile = new File(fileToStore);
 
