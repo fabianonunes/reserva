@@ -14,8 +14,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.jpedal.exception.PdfException;
 
 import com.itextpdf.text.DocumentException;
-import com.jmupdf.exceptions.DocException;
-import com.jmupdf.exceptions.DocSecurityException;
 
 public class App {
 
@@ -102,8 +100,8 @@ public class App {
 
 	}
 
-	private static void store(String fileToStore) throws PdfException,
-			DocException, DocSecurityException, IOException, DocumentException {
+	private static void store(String fileToStore) throws IOException,
+			PdfException, DocumentException {
 
 		File inputFile = new File(fileToStore);
 

@@ -112,11 +112,6 @@
 			<artifactId>weka</artifactId>
 			<version>3.6.4</version>
 		</dependency>
-		<dependency>
-			<groupId>jmupdf</groupId>
-			<artifactId>jmupdf</artifactId>
-			<version>20110614</version>
-		</dependency>
 	</dependencies>
 
 </project>

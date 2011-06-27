@@ -10,15 +10,13 @@ import java.util.TreeSet;
 import org.jpedal.exception.PdfException;
 
 import com.fabianonunes.reserva.pdf.iterator.PageIterator;
-import com.fabianonunes.reserva.pdf.iterator.processor.MuPdfFilter;
+import com.fabianonunes.reserva.pdf.iterator.processor.EmptiesFilter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-import com.jmupdf.exceptions.DocException;
-import com.jmupdf.exceptions.DocSecurityException;
 
 public class Store extends FileOutputter {
 
@@ -33,8 +31,7 @@ public class Store extends FileOutputter {
 
 	}
 
-	public void split() throws PdfException, DocException,
-			DocSecurityException, IOException, DocumentException {
+	public void split() throws IOException, PdfException, DocumentException {
 
 		reservePages = analyzePages();
 
@@ -94,12 +91,11 @@ public class Store extends FileOutputter {
 
 	}
 
-	protected Collection<Integer> analyzePages() throws PdfException,
-			DocException, DocSecurityException {
+	protected Collection<Integer> analyzePages() throws PdfException {
 
 		PageIterator<Integer> iterator = new PageIterator<Integer>();
 
-		return iterator.iterate(new MuPdfFilter(inputFile));
+		return iterator.iterate(new EmptiesFilter(inputFile));
 
 	}
 
