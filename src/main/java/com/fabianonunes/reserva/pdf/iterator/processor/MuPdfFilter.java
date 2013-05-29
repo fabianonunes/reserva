@@ -7,10 +7,11 @@ import java.io.IOException;
 import com.fabianonunes.reserva.classification.ImageClassifier;
 import com.fabianonunes.reserva.image.ImageKeys;
 import com.itextpdf.text.pdf.PdfException;
-import com.jmupdf.Page;
-import com.jmupdf.PageRenderer;
+import com.jmupdf.enums.ImageType;
 import com.jmupdf.exceptions.DocException;
 import com.jmupdf.exceptions.DocSecurityException;
+import com.jmupdf.page.Page;
+import com.jmupdf.page.PageRenderer;
 import com.jmupdf.pdf.PdfDocument;
 
 public class MuPdfFilter extends CLIPageProcessor<Integer> {
@@ -78,7 +79,7 @@ public class MuPdfFilter extends CLIPageProcessor<Integer> {
 		Page page = doc.getPage(pageNumber);
 
 		PageRenderer render = new PageRenderer(page, 0.5f,
-				Page.PAGE_ROTATE_AUTO, PageRenderer.IMAGE_TYPE_GRAY);
+				Page.PAGE_ROTATE_AUTO, ImageType.IMAGE_TYPE_GRAY);
 		render.render(true);
 
 		doc.dispose();

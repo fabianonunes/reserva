@@ -3,7 +3,7 @@ package com.fabianonunes.reserva.pdf.iterator.processor;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fabianonunes.reserva.pdf.iterator.PageIterator;
 
@@ -63,6 +63,8 @@ public abstract class CLIPageProcessor<T> implements PageProcessor<T> {
 			System.out.println("");
 			
 		}
+		
+		formater.close();
 
 
 	}

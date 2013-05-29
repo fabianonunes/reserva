@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class FileOutputter {
 
@@ -15,7 +15,7 @@ public abstract class FileOutputter {
 	File outputFile;
 
 	protected OutputStream getOutputStream(String suffix) throws IOException {
-
+		
 		String fileName = inputFile.getAbsolutePath();
 
 		File parent = inputFile.getCanonicalFile().getParentFile();

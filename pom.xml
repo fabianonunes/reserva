@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fabianonunes</groupId>
 	<artifactId>reserva</artifactId>
@@ -14,16 +15,7 @@
 		<repository>
 			<id>mvn.fabianonunes</id>
 			<name>Aditional Fabiano Repository</name>
-			<url>http://mvn.fabianonunes.com/</url>
-		</repository>
-		<repository>
-			<id>itextpdf.com</id>
-			<name>Maven Repository for iText</name>
-			<url>http://maven.itextpdf.com/</url>
-		</repository>
-		<repository>
-			<id>jboss</id>
-			<url>http://repository.jboss.org/maven2/</url>
+			<url>https://dl.dropbox.com/u/365552/mvn/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
@@ -44,8 +36,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -79,34 +71,36 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
+			<groupId>jmupdf</groupId>
+			<artifactId>jmupdf</artifactId>
+			<version>0.4.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>1.8.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>
-			<version>5.1.1</version>
+			<version>5.4.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>1.5.0</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
-			<groupId>org.swinglabs</groupId>
-			<artifactId>pdf-renderer</artifactId>
-			<version>1.0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
@@ -114,14 +108,14 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>weka</groupId>
-			<artifactId>weka</artifactId>
-			<version>3.6.4</version>
+			<groupId>nz.ac.waikato.cms.weka</groupId>
+			<artifactId>weka-stable</artifactId>
+			<version>3.6.9</version>
 		</dependency>
 		<dependency>
-			<groupId>jmupdf</groupId>
-			<artifactId>jmupdf</artifactId>
-			<version>20110614</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
 		</dependency>
 	</dependencies>
 
